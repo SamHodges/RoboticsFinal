@@ -25,8 +25,9 @@ ROBOT_STATE robotState = ROBOT_IDLE;
 enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE};
 ROBOT_LOCATION robot = INITIAL;
 
-// TODO: find a better base speed
+// TODO: find a better base and turn speed
 float baseSpeed = 10.0;
+float turnSpeed = 10.0;
 
 // set LED function
 void setLED(int pin, bool value)
