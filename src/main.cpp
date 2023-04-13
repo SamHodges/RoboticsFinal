@@ -116,7 +116,7 @@ void continueUntilDoneOrBlocked(int forward, int angle){
 
 void drive(){
   /*
-  TODO: write drive method
+  TODO: write drive method (Laura)
   1- create a switch case for each location start point (FIRE, HOSPITAL, INITIAL, PEOPLE)
   2- call relevant drive function (hospitalToFire, startToFire, fireToPeople, peopleToHospital)
   */
