@@ -5,6 +5,7 @@
 #include <ir_codes.h>
 #include <Chassis.h>
 #include <Rangefinder.h>
+#include <Rangefinder2.h>
 
 
 // Sets up the IR receiver/decoder object
@@ -13,7 +14,9 @@ IRDecoder decoder(IR_DETECTOR_PIN);
 
 // Sets up rangefinder sensor
 Rangefinder rangefinder(11, 4);
+Rangefinder2 rangefinder2(3,2);
 float distance = rangefinder.getDistance();
+float distance2 = rangefinder2.getDistance();
 
 // set up chassis
 Chassis chassis(7.2, 1440, 12.7); //13.5 instead of 12.7
@@ -51,11 +54,8 @@ void idle(void)
 
 
 void distanceReading(){
-  /*
-  Sam
-  TODO: ultrasonic sensing:
-  */
-  float distance = rangefinder.getDistance();
+  distance = rangefinder.getDistance();
+  distance2 = rangefinder2.getDistance();
 }
 
 void fireReading(){
@@ -85,6 +85,7 @@ void setup()
 
   // initialize rangefinder 
   rangefinder.init();
+  rangefinder2.init();
 
   Serial.println("/setup()");
 }
