@@ -117,7 +117,7 @@ void continueUntilDoneOrBlocked(int forward, int angle){
 void drive(){
   //LAURA
   /*
-  TODO: write drive method (Laura)
+  TODO: write drive method
   1- create a switch case for each location start point (FIRE, HOSPITAL, INITIAL, PEOPLE)
   2- call relevant drive function (hospitalToFire, startToFire, fireToPeople, peopleToHospital)
   */
@@ -207,7 +207,7 @@ void loop()
   if(keyPress >= 0) handleKeyPress(keyPress);
 
   /*
-  TODO: state machine
+  TODO: state machine (Sam)
   1- go through each state, idle does nothing, drive moves between locations,
   fire puts out fire, rescue scoops up people. this needs to call relevant functions.
   (idle, drive, rescue, fire)
