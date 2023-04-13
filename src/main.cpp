@@ -207,7 +207,6 @@ void loop()
   if(keyPress >= 0) handleKeyPress(keyPress);
 
   /*
-  TODO: state machine (Sam)
   1- go through each state, idle does nothing, drive moves between locations,
   fire puts out fire, rescue scoops up people. this needs to call relevant functions.
   (idle, drive, rescue, fire)
@@ -215,7 +214,35 @@ void loop()
   */
   switch(robotState)
   {
+    case ROBOT_DRIVE:
+      setLED(LED_PIN_EX1, HIGH);
+      setLED(LED_PIN_EX2, HIGH);
+      drive();
+      break;
     
+    case ROBOT_FIRE:
+      setLED(LED_PIN_EX1, HIGH);
+      setLED(LED_PIN_EX2, LOW);
+      fire();
+      break;
+
+    case ROBOT_RESCUE:
+      setLED(LED_PIN_EX1, LOW);
+      setLED(LED_PIN_EX2, HIGH);
+      rescue();
+      break;
+
+    case ROBOT_WAIT:
+      setLED(LED_PIN_EX1, LOW);
+      setLED(LED_PIN_EX2, LOW);
+      wait(10);
+      break;
+    
+    case ROBOT_IDLE:
+      setLED(LED_PIN_EX1, LOW);
+      setLED(LED_PIN_EX2, LOW);
+      break;
+
     default:
       break;
   }
