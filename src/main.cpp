@@ -201,6 +201,8 @@ void wait(int time){
   1- wait for given amount of time
   2- switch to drive
   */
+  delay(time);
+  robotState = ROBOT_DRIVE;
 }
 
 // main loop
