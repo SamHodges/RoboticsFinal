@@ -120,6 +120,9 @@ void hospitalToFire(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+
+  Note: our fire location is the top one, use the route that goes next to the wall furtherst from
+  fires, then crosses through the middle towards fire (just trying to avoid other robot)
   */
 }
 
@@ -129,6 +132,10 @@ void startToFire(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+
+  Note: our start location is further into the fire department, as in the other robot is going first
+  fire location is the top one, use the route that goes next to the wall furtherst from
+  fires, then crosses through the middle towards fire (just trying to avoid other robot)
   */
 }
 
@@ -138,6 +145,8 @@ void fireToPeople(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+
+  Note: our fire location is the top one
   */
 }
 
@@ -147,6 +156,9 @@ void peopleToHospital(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+
+  Note: our fire location is the top one, use the route that goes next to the wall furtherst from
+  fires, then crosses through the middle towards fire (just trying to avoid other robot)
   */
 }
 
