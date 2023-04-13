@@ -101,7 +101,7 @@ void handleKeyPress(int16_t keyPress)
   }
 
    /*
-  TODO: start button
+  TODO: start button 
   1. add button for starting a round-- switches back to drive 
   */
 }
@@ -129,6 +129,8 @@ void hospitalToFire(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+  3- update state
+
 
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
@@ -141,6 +143,7 @@ void startToFire(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+  3- update state
 
   Note: our start location is further into the fire department, as in the other robot is going first
   fire location is the top one, use the route that goes next to the wall furtherst from
@@ -154,6 +157,7 @@ void fireToPeople(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+  3- update state
 
   Note: our fire location is the top one
   */
@@ -193,7 +197,7 @@ void fire(){
 
 void wait(int time){
   /*
-  TODO: wait function while other robot goes wherever
+  TODO: wait function while other robot goes wherever (Sam)
   1- wait for given amount of time
   2- switch to drive
   */
