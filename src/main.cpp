@@ -89,28 +89,6 @@ void setup()
   Serial.println("/setup()");
 }
 
-// handle key presses
-void handleKeyPress(int16_t keyPress)
-{
- // emergency stop button
-  if (keyPress == ENTER_SAVE){
-    Serial.println("STOP");
-    idle();
-    robotState = ROBOT_IDLE;
-  }
-
-   /*
-  TODO: start button  ABBY 
-  1. add button for starting a round-- switches back to drive
-  */
-if (keyPress == 1){
-  Serial.println ("START");
-  drive();
-  robotState = ROBOT_DRIVE;
-}
-
-}
-
 void continueUntilDone(int distanceToWall, int angle){
   /*
   drive forwards or turn until you're done, then turn until done
@@ -127,27 +105,6 @@ void continueUntilDone(int distanceToWall, int angle){
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
  }
  chassis.turnFor(-angle, turnSpeed, true);
-}
-
-void drive(){
-  //LAURA
-  switch (robotState)
-  {
-  case FIRE:
-    fireToPeople();
-    break;
-  case HOSPITAL:
-    hospitalToFire();
-    break;
-  case INITIAL:
-    startToFire();
-    break;
-  case PEOPLE:
-    peopleToHospital();
-    break;
-  default:
-    break;
-  }
 }
 
 void hospitalToFire(){
@@ -221,6 +178,51 @@ void fireToPeople(){
  robotState = ROBOT_RESCUE;
 
 }
+
+
+void drive(){
+  //LAURA
+  switch (robotState)
+  {
+  case FIRE:
+    fireToPeople();
+    break;
+  case HOSPITAL:
+    hospitalToFire();
+    break;
+  case INITIAL:
+    startToFire();
+    break;
+  case PEOPLE:
+    peopleToHospital();
+    break;
+  default:
+    break;
+  }
+}
+
+// handle key presses
+void handleKeyPress(int16_t keyPress)
+{
+ // emergency stop button
+  if (keyPress == ENTER_SAVE){
+    Serial.println("STOP");
+    idle();
+    robotState = ROBOT_IDLE;
+  }
+
+   /*
+  TODO: start button  ABBY 
+  1. add button for starting a round-- switches back to drive
+  */
+if (keyPress == 1){
+  Serial.println ("START");
+  drive();
+  robotState = ROBOT_DRIVE;
+}
+
+}
+
 
 void peopleToHospital(){
 /* LAURA
