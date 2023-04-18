@@ -207,7 +207,7 @@ void startToFire(){
 }
 
 void fireToPeople(){
-  /*
+  /* 
   TODO: write this function to drive from fire to the people
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
@@ -228,6 +228,12 @@ void peopleToHospital(){
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
   */
+
+  //turn left 180 degrees and go straigth 30 cm?
+  //turn left 90 degrees and go straigth 60 cm?
+  //turn left 90 degrees and go straigth 2 meters?
+  //turn right 90 degrees and go straight 30 cm
+  //turn right 90 degrees and go straight 10 cm
 }
 
 void rescue(){
