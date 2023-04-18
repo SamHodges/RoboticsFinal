@@ -113,13 +113,6 @@ void continueUntilDoneOrBlocked(int forward, int angle){
   */
 }
 
-void drive(){
-  /*
-  TODO: write drive method
-  1- create a switch case for each location start point (FIRE, HOSPITAL, INITIAL, PEOPLE)
-  2- call relevant drive function (hospitalToFire, startToFire, fireToPeople, peopleToHospital)
-  */
-}
 
 void hospitalToFire(){
   /*
@@ -169,6 +162,35 @@ void peopleToHospital(){
   */
 }
 
+void drive(){
+  /*
+  TODO: write drive method
+  1- create a switch case for each location start point (FIRE, HOSPITAL, INITIAL, PEOPLE)
+  2- call relevant drive function (hospitalToFire, startToFire, fireToPeople, peopleToHospital)
+  */
+
+  switch (robotState){
+    case FIRE:
+      fireToPeople();
+      break;
+    
+    case HOSPITAL:
+      hospitalToFire();
+      break;
+    
+    case INITIAL:
+      startToFire();
+      break;
+    
+    case PEOPLE:
+      peopleToHospital();
+      break;
+    
+    default:
+      break;
+  } 
+
+}
 void rescue(){
   /*
   TODO: rescue people
