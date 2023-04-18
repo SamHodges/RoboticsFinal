@@ -203,7 +203,7 @@ void fireToPeople(){
 }
 
 void peopleToHospital(){
-/*
+/* LAURA
   TODO: write this function to drive from people to the hospital
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
@@ -215,7 +215,7 @@ void peopleToHospital(){
 }
 
 void rescue(){
-  /*
+  /* LAURA
   TODO: rescue people
   1- scoop up people
   2- lift and drop can to check we've grabbed it
