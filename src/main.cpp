@@ -120,11 +120,13 @@ void continueUntilDone(int distanceToWall, int angle){
   TODO: potentially add PID, but don't have to
   */
 
+ // RIGHT: positive angle!
+
  while (distance > distanceToWall) {
   distanceReading();
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
  }
- chassis.turnFor(angle, turnSpeed, true);
+ chassis.turnFor(-angle, turnSpeed, true);
 }
 
 void drive(){
@@ -160,6 +162,20 @@ void hospitalToFire(){
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
   */
+
+ // turn away from hospital
+  continueUntilDone(0, 180);
+ // go forwards, turn left
+ continueUntilDone(10, -90);
+ // forwards (center line), turn left
+ continueUntilDone(50, -90);
+ // long forwards, turn right
+  continueUntilDone(10, 90);
+ // go forwards, turn right
+ continueUntilDone(20, 90);
+ // switch to fire!!
+ robotLocation = FIRE;
+ robotState = ROBOT_FIRE;
 }
 
 void startToFire(){
