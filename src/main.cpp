@@ -5,6 +5,7 @@
 #include <ir_codes.h>
 #include <Chassis.h>
 #include <Rangefinder.h>
+#include <Rangefinder2.h>
 
 
 // Sets up the IR receiver/decoder object
@@ -13,7 +14,9 @@ IRDecoder decoder(IR_DETECTOR_PIN);
 
 // Sets up rangefinder sensor
 Rangefinder rangefinder(11, 4);
+Rangefinder2 rangefinder2(3,2);
 float distance = rangefinder.getDistance();
+float distance2 = rangefinder2.getDistance();
 
 // set up chassis
 Chassis chassis(7.2, 1440, 12.7); //13.5 instead of 12.7
@@ -51,11 +54,8 @@ void idle(void)
 
 
 void distanceReading(){
-  /*
-  Sam
-  TODO: ultrasonic sensing:
-  */
-  float distance = rangefinder.getDistance();
+  distance = rangefinder.getDistance();
+  distance2 = rangefinder2.getDistance();
 }
 
 void fireReading(){
@@ -85,6 +85,7 @@ void setup()
 
   // initialize rangefinder 
   rangefinder.init();
+  rangefinder2.init();
 
   Serial.println("/setup()");
 }
@@ -100,9 +101,15 @@ void handleKeyPress(int16_t keyPress)
   }
 
    /*
-  TODO: start button
+  TODO: start button  ABBY 
   1. add button for starting a round-- switches back to drive
   */
+if (keyPress == 1){
+  Serial.println ("START");
+  drive();
+  robotState = ROBOT_DRIVE;
+}
+
 }
 
 void continueUntilDoneOrBlocked(int forward, int angle){
@@ -113,6 +120,14 @@ void continueUntilDoneOrBlocked(int forward, int angle){
   */
 }
 
+void drive(){
+  //LAURA
+  /*
+  TODO: write drive method
+  1- create a switch case for each location start point (FIRE, HOSPITAL, INITIAL, PEOPLE)
+  2- call relevant drive function (hospitalToFire, startToFire, fireToPeople, peopleToHospital)
+  */
+}
 
 void hospitalToFire(){
   /*
@@ -120,6 +135,8 @@ void hospitalToFire(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+  3- update state
+
 
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
@@ -132,6 +149,7 @@ void startToFire(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+  3- update state
 
   Note: our start location is further into the fire department, as in the other robot is going first
   fire location is the top one, use the route that goes next to the wall furtherst from
@@ -145,6 +163,7 @@ void fireToPeople(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
+  3- update state
 
   Note: our fire location is the top one
   */
@@ -213,10 +232,12 @@ void fire(){
 
 void wait(int time){
   /*
-  TODO: wait function while other robot goes wherever
+  TODO: wait function while other robot goes wherever (Sam)
   1- wait for given amount of time
   2- switch to drive
   */
+  delay(time);
+  robotState = ROBOT_DRIVE;
 }
 
 // main loop
@@ -227,7 +248,6 @@ void loop()
   if(keyPress >= 0) handleKeyPress(keyPress);
 
   /*
-  TODO: state machine
   1- go through each state, idle does nothing, drive moves between locations,
   fire puts out fire, rescue scoops up people. this needs to call relevant functions.
   (idle, drive, rescue, fire)
@@ -235,7 +255,35 @@ void loop()
   */
   switch(robotState)
   {
+    case ROBOT_DRIVE:
+      setLED(LED_PIN_EX1, HIGH);
+      setLED(LED_PIN_EX2, HIGH);
+      drive();
+      break;
     
+    case ROBOT_FIRE:
+      setLED(LED_PIN_EX1, HIGH);
+      setLED(LED_PIN_EX2, LOW);
+      fire();
+      break;
+
+    case ROBOT_RESCUE:
+      setLED(LED_PIN_EX1, LOW);
+      setLED(LED_PIN_EX2, HIGH);
+      rescue();
+      break;
+
+    case ROBOT_WAIT:
+      setLED(LED_PIN_EX1, LOW);
+      setLED(LED_PIN_EX2, LOW);
+      wait(10);
+      break;
+    
+    case ROBOT_IDLE:
+      setLED(LED_PIN_EX1, LOW);
+      setLED(LED_PIN_EX2, LOW);
+      break;
+
     default:
       break;
   }
