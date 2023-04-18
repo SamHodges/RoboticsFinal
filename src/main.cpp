@@ -224,8 +224,7 @@ void handleKeyPress(int16_t keyPress)
   }
 
    /*
-  TODO: start button  ABBY 
-  1. add button for starting a round-- switches back to drive
+  button for starting a round-- switches back to drive
   */
 if (keyPress == 1){
   Serial.println ("START");
