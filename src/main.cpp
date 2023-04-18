@@ -31,7 +31,7 @@ ROBOT_STATE robotState = ROBOT_IDLE;
 
 // define robot location
 enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE};
-ROBOT_LOCATION robot = INITIAL;
+ROBOT_LOCATION robotLocation = INITIAL;
 
 // TODO: find a better base and turn speed
 float baseSpeed = 10.0;
@@ -112,7 +112,7 @@ if (keyPress == 1){
 
 }
 
-void continueUntilDoneOrBlocked(int forward, int angle){
+void continueUntilDoneOrBlocked(int distanceToWall, int angle){
   /*
   TODO: drive forwards or turn until you're done or blocked
   1- check sensors
@@ -145,17 +145,42 @@ void hospitalToFire(){
 
 void startToFire(){
 /*
-  SAM
-  TODO: write this function to drive from start location to fire
-  1- write function, using ultrasonic sensor and knowledge of walls/turns
-  1b- maybe add PID for straight wall follow? Optional and may not work
-  2- update location
-  3- update state
-
   Note: our start location is further into the fire department, as in the other robot is going first
   fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
+  
+  TODO: test these distances!!!!!
   */
+
+ // go forwards til close af
+  continueUntilDoneOrBlocked(5, 0);
+ // turn right 90
+ continueUntilDoneOrBlocked(0, 90);
+ // go forwards til close
+ continueUntilDoneOrBlocked(10, 0);
+ // turn left 90
+ continueUntilDoneOrBlocked(0, -90);
+ // forwards til close
+ continueUntilDoneOrBlocked(10, 0);
+ // left 90
+ continueUntilDoneOrBlocked(0, -90);
+ // forwards til middle
+ continueUntilDoneOrBlocked(50, 0);
+ // right 90
+ continueUntilDoneOrBlocked(0, 90);
+ // forwards til close
+ continueUntilDoneOrBlocked(10, 0);
+ //right 90
+ continueUntilDoneOrBlocked(0, 90);
+ // forwards til meh close ish
+ continueUntilDoneOrBlocked(20, 0);
+ // turn right 90
+ continueUntilDoneOrBlocked(0, 90);
+ // switch to fire!
+ robotLocation = FIRE;
+ robotState = ROBOT_FIRE;
+
+
 }
 
 void fireToPeople(){
