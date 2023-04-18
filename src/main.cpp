@@ -114,6 +114,7 @@ if (keyPress == 1){
 
 void continueUntilDoneOrBlocked(int distanceToWall, int angle){
   /*
+  SAM
   TODO: drive forwards or turn until you're done or blocked
   1- check sensors
   2- continue movement while checking sensors
