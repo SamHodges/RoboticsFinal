@@ -112,13 +112,18 @@ if (keyPress == 1){
 
 }
 
-void continueUntilDoneOrBlocked(int distanceToWall, int angle){
+void continueUntilDone(int distanceToWall, int angle){
   /*
-  SAM
-  TODO: drive forwards or turn until you're done or blocked
+  drive forwards or turn until you're done, then turn until done
   1- check sensors
   2- continue movement while checking sensors
   */
+
+ while (distance > distanceToWall) {
+  distanceReading();
+  chassis.setWheelSpeeds(baseSpeed,baseSpeed);
+ }
+ chassis.turnFor(angle, turnSpeed, true);
 }
 
 void drive(){
@@ -165,30 +170,18 @@ void startToFire(){
   TODO: test these distances!!!!!
   */
 
- // go forwards til close af
-  continueUntilDoneOrBlocked(5, 0);
- // turn right 90
- continueUntilDoneOrBlocked(0, 90);
- // go forwards til close
- continueUntilDoneOrBlocked(10, 0);
- // turn left 90
- continueUntilDoneOrBlocked(0, -90);
+ // go forwards, turn right
+  continueUntilDone(5, 90);
+ // go forwards, turn left
+ continueUntilDone(10, -90);
+ // forwards, turn left
+ continueUntilDone(10, -90);
+ // forwards, turn right
+ continueUntilDone(50, 90);
  // forwards til close
- continueUntilDoneOrBlocked(10, 0);
- // left 90
- continueUntilDoneOrBlocked(0, -90);
- // forwards til middle
- continueUntilDoneOrBlocked(50, 0);
- // right 90
- continueUntilDoneOrBlocked(0, 90);
- // forwards til close
- continueUntilDoneOrBlocked(10, 0);
- //right 90
- continueUntilDoneOrBlocked(0, 90);
- // forwards til meh close ish
- continueUntilDoneOrBlocked(20, 0);
- // turn right 90
- continueUntilDoneOrBlocked(0, 90);
+ continueUntilDone(10, 90);
+ // forwards, right
+ continueUntilDone(20, 90);
  // switch to fire!
  robotLocation = FIRE;
  robotState = ROBOT_FIRE;
