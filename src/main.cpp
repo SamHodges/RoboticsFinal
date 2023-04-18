@@ -179,6 +179,18 @@ void fireToPeople(){
 
 }
 
+void peopleToHospital(){
+/* LAURA
+  TODO: write this function to drive from people to the hospital
+  1- write function, using ultrasonic sensor and knowledge of walls/turns
+  1b- maybe add PID for straight wall follow? Optional and may not work
+  2- update location
+
+  Note: our fire location is the top one, use the route that goes next to the wall furtherst from
+  fires, then crosses through the middle towards fire (just trying to avoid other robot)
+  */
+}
+
 
 void drive(){
   //LAURA
@@ -221,19 +233,6 @@ if (keyPress == 1){
   robotState = ROBOT_DRIVE;
 }
 
-}
-
-
-void peopleToHospital(){
-/* LAURA
-  TODO: write this function to drive from people to the hospital
-  1- write function, using ultrasonic sensor and knowledge of walls/turns
-  1b- maybe add PID for straight wall follow? Optional and may not work
-  2- update location
-
-  Note: our fire location is the top one, use the route that goes next to the wall furtherst from
-  fires, then crosses through the middle towards fire (just trying to avoid other robot)
-  */
 }
 
 void rescue(){
