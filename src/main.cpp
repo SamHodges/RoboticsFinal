@@ -205,6 +205,7 @@ void startToFire(){
 
 void fireToPeople(){
   /*
+  SAM
   TODO: write this function to drive from fire to the people
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
