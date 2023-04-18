@@ -205,15 +205,21 @@ void startToFire(){
 
 void fireToPeople(){
   /*
-  SAM
-  TODO: write this function to drive from fire to the people
-  1- write function, using ultrasonic sensor and knowledge of walls/turns
-  1b- maybe add PID for straight wall follow? Optional and may not work
-  2- update location
-  3- update state
+  go from fire to people
 
   Note: our fire location is the top one
+
+  TODO: test values!
   */
+
+ // turn left
+  continueUntilDone(0, -90);
+ // straight a bit, then right
+  continueUntilDone(15, 90);
+ // pickup time!
+ robotLocation = PEOPLE;
+ robotState = ROBOT_RESCUE;
+
 }
 
 void peopleToHospital(){
