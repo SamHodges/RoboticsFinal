@@ -74,7 +74,6 @@ void setup()
   Serial.begin(115200);
   pinMode(LED_PIN_EX1, OUTPUT);
 
-  // TODO, Section IV.1 step5: Initialize the chassis (which also initializes the motors)
   chassis.init();
   chassis.setMotorPIDcoeffs(4, 0.02);
 
@@ -117,6 +116,8 @@ void continueUntilDone(int distanceToWall, int angle){
   drive forwards or turn until you're done, then turn until done
   1- check sensors
   2- continue movement while checking sensors
+
+  TODO: potentially add PID, but don't have to
   */
 
  while (distance > distanceToWall) {
@@ -149,9 +150,9 @@ void drive(){
 
 void hospitalToFire(){
   /*
+  SAM
   TODO: write this function to drive from hospital back to fire
   1- write function, using ultrasonic sensor and knowledge of walls/turns
-  1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
   3- update state
 
