@@ -157,6 +157,7 @@ void hospitalToFire(){
 
 void startToFire(){
 /*
+  SAM
   TODO: write this function to drive from start location to fire
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
@@ -244,9 +245,7 @@ void fire(){
 
 void wait(int time){
   /*
-  TODO: wait function while other robot goes wherever (Sam)
-  1- wait for given amount of time
-  2- switch to drive
+  Wait function while other robot goes wherever
   */
   delay(time);
   robotState = ROBOT_DRIVE;
