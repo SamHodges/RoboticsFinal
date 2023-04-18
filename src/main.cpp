@@ -152,15 +152,12 @@ void drive(){
 
 void hospitalToFire(){
   /*
-  SAM
-  TODO: write this function to drive from hospital back to fire
-  1- write function, using ultrasonic sensor and knowledge of walls/turns
-  2- update location
-  3- update state
-
+  goes from hospital to fire
 
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
+  
+  TODO: test values!
   */
 
  // turn away from hospital
