@@ -89,28 +89,6 @@ void setup()
   Serial.println("/setup()");
 }
 
-// handle key presses
-void handleKeyPress(int16_t keyPress)
-{
- // emergency stop button
-  if (keyPress == ENTER_SAVE){
-    Serial.println("STOP");
-    idle();
-    robotState = ROBOT_IDLE;
-  }
-
-   /*
-  TODO: start button  ABBY 
-  1. add button for starting a round-- switches back to drive
-  */
-if (keyPress == 1){
-  Serial.println ("START");
-  drive();
-  robotState = ROBOT_DRIVE;
-}
-
-}
-
 void continueUntilDone(int distanceToWall, int angle){
   /*
   drive forwards or turn until you're done, then turn until done
@@ -129,38 +107,14 @@ void continueUntilDone(int distanceToWall, int angle){
  chassis.turnFor(-angle, turnSpeed, true);
 }
 
-void drive(){
-  //LAURA
-  switch (robotState)
-  {
-  case FIRE:
-    fireToPeople();
-    break;
-  case HOSPITAL:
-    hospitalToFire();
-    break;
-  case INITIAL:
-    startToFire();
-    break;
-  case PEOPLE:
-    peopleToHospital();
-    break;
-  default:
-    break;
-  }
-}
-
 void hospitalToFire(){
   /*
-  SAM
-  TODO: write this function to drive from hospital back to fire
-  1- write function, using ultrasonic sensor and knowledge of walls/turns
-  2- update location
-  3- update state
-
+  goes from hospital to fire
 
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
+  
+  TODO: test values!
   */
 
  // turn away from hospital
@@ -207,15 +161,31 @@ void startToFire(){
 }
 
 void fireToPeople(){
+<<<<<<< HEAD
   /* 
   TODO: write this function to drive from fire to the people
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
   3- update state
+=======
+  /*
+  go from fire to people
+>>>>>>> 35356ef216346c3f85d40227abe8dd662607b55a
 
   Note: our fire location is the top one
+
+  TODO: test values!
   */
+
+ // turn left
+  continueUntilDone(0, -90);
+ // straight a bit, then right
+  continueUntilDone(15, 90);
+ // pickup time!
+ robotLocation = PEOPLE;
+ robotState = ROBOT_RESCUE;
+
 }
 
 void peopleToHospital(){
@@ -234,6 +204,49 @@ void peopleToHospital(){
   //turn left 90 degrees and go straigth 2 meters?
   //turn right 90 degrees and go straight 30 cm
   //turn right 90 degrees and go straight 10 cm
+}
+
+
+void drive(){
+  //LAURA
+  switch (robotState)
+  {
+  case FIRE:
+    fireToPeople();
+    break;
+  case HOSPITAL:
+    hospitalToFire();
+    break;
+  case INITIAL:
+    startToFire();
+    break;
+  case PEOPLE:
+    peopleToHospital();
+    break;
+  default:
+    break;
+  }
+}
+
+// handle key presses
+void handleKeyPress(int16_t keyPress)
+{
+ // emergency stop button
+  if (keyPress == ENTER_SAVE){
+    Serial.println("STOP");
+    idle();
+    robotState = ROBOT_IDLE;
+  }
+
+   /*
+  button for starting a round-- switches back to drive
+  */
+if (keyPress == 1){
+  Serial.println ("START");
+  drive();
+  robotState = ROBOT_DRIVE;
+}
+
 }
 
 void rescue(){
