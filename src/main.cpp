@@ -39,7 +39,7 @@ ROBOT_LOCATION robotLocation = INITIAL;
 
 // TODO: find a better base and turn speed
 float baseSpeed = 10.0;
-float turnSpeed = 30.0;
+float turnSpeed = 100.0;
 
 // set LED function
 void setLED(int pin, bool value)
@@ -101,11 +101,9 @@ void continueUntilDone(int distanceToWall, int angle){
 
  // RIGHT: positive angle!
  distanceReading();
- Serial.println(distance);
-
+ 
  while (distance > distanceToWall) {
   distanceReading();
-  Serial.println(distance);
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
  }
  chassis.turnFor(-angle, turnSpeed, true);
@@ -164,15 +162,12 @@ void startToFire(){
 
  // go forwards, turn right
  Serial.println("forward right!");
-  continueUntilDone(15, 100);
-   distanceReading();
+ continueUntilDone(15, 100);
  // go forwards, turn left
  Serial.println("forward left!");
- distanceReading();
  Serial.println("new distance!");
  distanceReading();
  continueUntilDone(15, -100);
- distanceReading();
  // forwards, turn left
  Serial.println("forward left!");
  continueUntilDone(15, -100);
