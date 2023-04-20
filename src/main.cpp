@@ -110,6 +110,12 @@ void continueUntilDone(int distanceToWall, int angle){
 
 bool checkForFire(){
   // TODO: check if there's fire, if there is return true - OLIVIA
+  fireReading();
+  if (flameSignal < 100){
+    return true;
+  } else {
+    return false;
+  }
 }
 
 void hospitalToFire(){
