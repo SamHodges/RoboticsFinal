@@ -25,12 +25,16 @@ Chassis chassis(7.2, 1440, 12.7); //13.5 instead of 12.7
 const int LED_PIN_EX1 = 12;
 const int LED_PIN_EX2 = 18;  
 
+// connect flame sensor to pin A11
+const int FLAME_PIN = A11; 
+int flameSignal=analogRead(FLAME_PIN);
+
 // Defines the robot states
-enum ROBOT_STATE {ROBOT_IDLE, ROBOT_DRIVE, ROBOT_FIRE, ROBOT_RESCUE, ROBOT_WAIT};
+enum ROBOT_STATE {ROBOT_IDLE, ROBOT_DRIVE, ROBOT_FIRE, ROBOT_RESCUE, ROBOT_WAIT, ROBOT_FLEE};
 ROBOT_STATE robotState = ROBOT_IDLE;
 
 // define robot location
-enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE};
+enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE, GATE};
 ROBOT_LOCATION robotLocation = INITIAL;
 
 // TODO: find a better base and turn speed
@@ -52,6 +56,7 @@ void idle(void)
   robotState = ROBOT_IDLE;
 }
 
+// TODO: add white line sensing method so we can check if we've entered an area
 
 void distanceReading(){
   distance = rangefinder.getDistance();
@@ -59,12 +64,7 @@ void distanceReading(){
 }
 
 void fireReading(){
-  /*
-  TODO: fire sensor
-  1. create fire sensing vars at the top
-  2. add fire sensing to init() method
-  3. update fire sense var in this function
-  */
+  flameSignal=analogRead(FLAME_PIN);
 }
 
 // standard setup
@@ -73,6 +73,7 @@ void setup()
   // This will initialize the Serial at a baud rate of 115200 for prints
   Serial.begin(115200);
   pinMode(LED_PIN_EX1, OUTPUT);
+  pinMode(FLAME_PIN,INPUT);
 
   chassis.init();
   chassis.setMotorPIDcoeffs(4, 0.02);
@@ -95,7 +96,7 @@ void continueUntilDone(int distanceToWall, int angle){
   1- check sensors
   2- continue movement while checking sensors
 
-  TODO: potentially add PID, but don't have to
+  TODO: potentially add PID, but don't have to, eg use wall following to not get off track
   */
 
  // RIGHT: positive angle!
@@ -105,6 +106,10 @@ void continueUntilDone(int distanceToWall, int angle){
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
  }
  chassis.turnFor(-angle, turnSpeed, true);
+}
+
+bool checkForFire(){
+  // TODO: check if there's fire, if there is return true - OLIVIA
 }
 
 void hospitalToFire(){
@@ -129,7 +134,12 @@ void hospitalToFire(){
  continueUntilDone(20, 90);
  // switch to fire!!
  robotLocation = FIRE;
- robotState = ROBOT_FIRE;
+ if (checkForFire()){
+  robotState = ROBOT_FIRE;
+ }
+ else{
+  robotState = ROBOT_FLEE;
+ }
 }
 
 void startToFire(){
@@ -207,10 +217,18 @@ void peopleToHospital(){
   robotState = ROBOT_IDLE;
 }
 
+void gateToFire(){
+  // TODO: if starting at gate, go from here to fire
+}
+
+void fireToGate(){
+  // if no fire, go out of gate, go back to idle
+}
+
 
 void drive(){
   //LAURA
-  switch (robotState)
+  switch (robotLocation)
   {
   case FIRE:
     fireToPeople();
@@ -223,6 +241,9 @@ void drive(){
     break;
   case PEOPLE:
     peopleToHospital();
+    break;
+  case GATE:
+    gateToFire();
     break;
   default:
     break;
@@ -320,6 +341,12 @@ void loop()
     case ROBOT_IDLE:
       setLED(LED_PIN_EX1, LOW);
       setLED(LED_PIN_EX2, LOW);
+      break;
+
+    case ROBOT_FLEE:
+      setLED(LED_PIN_EX1, HIGH);
+      setLED(LED_PIN_EX2, HIGH);
+      fireToGate();
       break;
 
     default:
