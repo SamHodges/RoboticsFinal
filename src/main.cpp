@@ -171,6 +171,7 @@ void startToFire(){
 }
 
 void fireToPeople(){
+
   /*
   go from fire to people
 
@@ -199,6 +200,20 @@ void peopleToHospital(){
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
   */
+
+  //turn left 180 degrees and go straigth 
+  continueUntilDone(10, -180);
+  //turn left 90 degrees and go straigth 
+  continueUntilDone(10, -90);
+  //turn left 90 degrees and go straigth 
+  continueUntilDone(10, -90);
+  //turn right 90 degrees and go straight 
+  continueUntilDone(10, 90);
+  //turn right 90 degrees and go straight 
+  continueUntilDone(10, 90);
+
+  //update location
+  robotLocation = HOSPITAL;
 }
 
 void gateToFire(){
