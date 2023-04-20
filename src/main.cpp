@@ -109,7 +109,7 @@ void continueUntilDone(int distanceToWall, int angle){
 }
 
 bool checkForFire(){
-  // TODO: check if there's fire, if there is return true
+  // TODO: check if there's fire, if there is return true - OLIVIA
 }
 
 void hospitalToFire(){
