@@ -317,7 +317,7 @@ void rescue(){
 }
 
 void fire(){
-  /*
+  /* OLIVIA
   TODO: put out fire
   1- adjust so facing fire
   2- blow flame out
