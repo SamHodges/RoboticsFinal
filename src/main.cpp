@@ -235,12 +235,13 @@ void peopleToHospital(){
   turn(200);
   Serial.println("go straight and turn left");
   continueUntilDone(15, -100);
-  distanceReading();
   Serial.println("go straight and turn left");
   continueUntilDone(15, -100);
   Serial.println("go straight and turn right");
-  continueUntilDone(50, 100);
+  continueUntilDone(15, 100);
   Serial.println("go straight and turn right");
+  continueUntilDone(70, 100);
+  Serial.println("go straight and turn left");
   continueUntilDone(15, -100);
 
   //update location
