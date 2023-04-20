@@ -35,12 +35,12 @@ ROBOT_LOCATION robotLocation = INITIAL;
 
 // TODO: find a better base and turn speed
 float baseSpeed = 10.0;
-float turnSpeed = 10.0;
+float turnSpeed = 30.0;
 
 // set LED function
 void setLED(int pin, bool value)
 {
-  Serial.println("setLED()");
+  // Serial.println("setLED()");
   digitalWrite(pin, value);
 }
 
@@ -103,6 +103,7 @@ void continueUntilDone(int distanceToWall, int angle){
 
  while (distance > distanceToWall) {
   distanceReading();
+  Serial.println(distance);
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
  }
  chassis.turnFor(-angle, turnSpeed, true);
@@ -143,6 +144,7 @@ void hospitalToFire(){
 }
 
 void startToFire(){
+  Serial.println("Start!");
 /*
   Note: our start location is further into the fire department, as in the other robot is going first
   fire location is the top one, use the route that goes next to the wall furtherst from
@@ -152,16 +154,22 @@ void startToFire(){
   */
 
  // go forwards, turn right
-  continueUntilDone(5, 90);
+ Serial.println("forward right!");
+  continueUntilDone(15, 90);
  // go forwards, turn left
+ Serial.println("forward left!");
  continueUntilDone(10, -90);
  // forwards, turn left
+ Serial.println("forward left!");
  continueUntilDone(10, -90);
  // forwards, turn right
+ Serial.println("forward right!");
  continueUntilDone(50, 90);
  // forwards til close
+ Serial.println("forward right!");
  continueUntilDone(10, 90);
  // forwards, right
+ Serial.println("forward right!");
  continueUntilDone(20, 90);
  // switch to fire!
  robotLocation = FIRE;
@@ -252,6 +260,7 @@ void drive(){
 // handle key presses
 void handleKeyPress(int16_t keyPress)
 {
+  Serial.println(keyPress);
  // emergency stop button
   if (keyPress == ENTER_SAVE){
     Serial.println("STOP");
@@ -262,7 +271,7 @@ void handleKeyPress(int16_t keyPress)
    /*
   button for starting a round-- switches back to drive
   */
-if (keyPress == 1){
+if (keyPress == 16){ // key code for 1
   Serial.println ("START");
   drive();
   robotState = ROBOT_DRIVE;
