@@ -61,7 +61,7 @@ void distanceReading(){
 
 void fireReading(){
   /*
-  TODO: fire sensor
+  TODO: fire sensor olivia :)
   1. create fire sensing vars at the top
   2. add fire sensing to init() method
   3. update fire sense var in this function
