@@ -147,9 +147,9 @@ void hospitalToFire(){
  // go forwards, turn left
  continueUntilDone(10, -90);
  // forwards (center line), turn left
- continueUntilDone(50, -90);
+ continueUntilDone(10, -90);
  // long forwards, turn right
-  continueUntilDone(10, 90);
+  continueUntilDone(50, 90);
  // go forwards, turn right
  continueUntilDone(20, 90);
  // switch to fire!!
@@ -235,10 +235,11 @@ void peopleToHospital(){
   turn(200);
   Serial.println("go straight and turn left");
   continueUntilDone(15, -100);
+  distanceReading();
   Serial.println("go straight and turn left");
   continueUntilDone(15, -100);
   Serial.println("go straight and turn right");
-  continueUntilDone(40, 100);
+  continueUntilDone(50, 100);
   Serial.println("go straight and turn right");
   continueUntilDone(15, -100);
 
