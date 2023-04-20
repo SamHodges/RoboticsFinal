@@ -60,7 +60,10 @@ void idle(void)
 
 void distanceReading(){
   distance = rangefinder.getDistance();
+  delay(100);
+  Serial.println(distance);
   distance2 = rangefinder2.getDistance();
+  delay(100);
 }
 
 void fireReading(){
@@ -107,6 +110,8 @@ void continueUntilDone(int distanceToWall, int angle){
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
  }
  chassis.turnFor(-angle, turnSpeed, true);
+ Serial.println("wait!");
+ delay(5);
   distanceReading();
 }
 
@@ -167,7 +172,7 @@ void startToFire(){
  Serial.println("forward left!");
  Serial.println("new distance!");
  distanceReading();
- continueUntilDone(15, -100);
+ continueUntilDone(10, -100);
  // forwards, turn left
  Serial.println("forward left!");
  continueUntilDone(15, -100);
@@ -183,6 +188,7 @@ void startToFire(){
  // switch to fire!
  robotLocation = FIRE;
  robotState = ROBOT_FIRE;
+ idle();
 
 
 }
