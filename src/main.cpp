@@ -39,12 +39,13 @@ ROBOT_LOCATION robotLocation = PEOPLE;
 
 // TODO: find a better base and turn speed
 float baseSpeed = 10.0;
-float turnSpeed = 60.0;
+float turnSpeed = 100.0;
+
 
 // set LED function
 void setLED(int pin, bool value)
 {
-  Serial.println("setLED()");
+  // Serial.println("setLED()");
   digitalWrite(pin, value);
 }
 
@@ -104,17 +105,25 @@ void continueUntilDone(int distanceToWall, int angle){
   */
 
  // RIGHT: positive angle!
-distanceReading();
+
+ distanceReading();
 
  while (distance > distanceToWall) {
   distanceReading();
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
  }
  chassis.turnFor(-angle, turnSpeed, true);
+  distanceReading();
 }
 
 bool checkForFire(){
   // TODO: check if there's fire, if there is return true - OLIVIA
+  fireReading();
+  if (flameSignal < 100){
+    return true;
+  } else {
+    return false;
+  }
 }
 
 void hospitalToFire(){
@@ -125,6 +134,7 @@ void hospitalToFire(){
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
   
   TODO: test values!
+
   */
 
  // turn away from hospital
@@ -148,6 +158,7 @@ void hospitalToFire(){
 }
 
 void startToFire(){
+  Serial.println("Start!");
 /*
   Note: our start location is further into the fire department, as in the other robot is going first
   fire location is the top one, use the route that goes next to the wall furtherst from
@@ -157,17 +168,25 @@ void startToFire(){
   */
 
  // go forwards, turn right
-  continueUntilDone(5, 90);
+ Serial.println("forward right!");
+ continueUntilDone(15, 100);
  // go forwards, turn left
- continueUntilDone(10, -90);
+ Serial.println("forward left!");
+ Serial.println("new distance!");
+ distanceReading();
+ continueUntilDone(15, -100);
  // forwards, turn left
- continueUntilDone(10, -90);
+ Serial.println("forward left!");
+ continueUntilDone(15, -100);
  // forwards, turn right
- continueUntilDone(50, 90);
+ Serial.println("forward right!");
+ continueUntilDone(50, 100);
  // forwards til close
- continueUntilDone(10, 90);
+ Serial.println("forward right!");
+ continueUntilDone(15, 100);
  // forwards, right
- continueUntilDone(20, 90);
+ Serial.println("forward right!");
+ continueUntilDone(30, 100);
  // switch to fire!
  robotLocation = FIRE;
  robotState = ROBOT_FIRE;
@@ -205,8 +224,7 @@ void peopleToHospital(){
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
   */
-
-  //turn left 180 degrees and go straigth 
+  Serial.println("Start!");
   Serial.println("turn 180");
   turn(200);
   Serial.println("go straight and turn left");
@@ -259,9 +277,11 @@ void drive(){
 // handle key presses
 void handleKeyPress(int16_t keyPress)
 {
+  Serial.println(keyPress);
  // emergency stop button
   if (keyPress == ENTER_SAVE){
     Serial.println("STOP");
+    // TODO: figure out how to make this work while also in drive mode
     idle();
     robotState = ROBOT_IDLE;
   }
@@ -269,7 +289,8 @@ void handleKeyPress(int16_t keyPress)
    /*
   button for starting a round-- switches back to drive
   */
-if (keyPress == 16){
+
+if (keyPress == 16){ // key code for 1
   Serial.println ("START");
   drive();
   robotState = ROBOT_DRIVE;
