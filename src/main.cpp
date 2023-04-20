@@ -31,15 +31,15 @@ int flameSignal=analogRead(FLAME_PIN);
 
 // Defines the robot states
 enum ROBOT_STATE {ROBOT_IDLE, ROBOT_DRIVE, ROBOT_FIRE, ROBOT_RESCUE, ROBOT_WAIT, ROBOT_FLEE};
-ROBOT_STATE robotState = ROBOT_IDLE;
+ROBOT_STATE robotState = ROBOT_RESCUE;
 
 // define robot location
 enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE, GATE};
-ROBOT_LOCATION robotLocation = INITIAL;
+ROBOT_LOCATION robotLocation = PEOPLE;
 
 // TODO: find a better base and turn speed
 float baseSpeed = 10.0;
-float turnSpeed = 10.0;
+float turnSpeed = 60.0;
 
 // set LED function
 void setLED(int pin, bool value)
@@ -90,6 +90,10 @@ void setup()
   Serial.println("/setup()");
 }
 
+void turn(int angle){
+  chassis.turnFor(-angle, turnSpeed, true);
+}
+
 void continueUntilDone(int distanceToWall, int angle){
   /*
   drive forwards or turn until you're done, then turn until done
@@ -100,6 +104,7 @@ void continueUntilDone(int distanceToWall, int angle){
   */
 
  // RIGHT: positive angle!
+distanceReading();
 
  while (distance > distanceToWall) {
   distanceReading();
@@ -202,15 +207,16 @@ void peopleToHospital(){
   */
 
   //turn left 180 degrees and go straigth 
-  continueUntilDone(10, -180);
-  //turn left 90 degrees and go straigth 
-  continueUntilDone(10, -90);
-  //turn left 90 degrees and go straigth 
-  continueUntilDone(10, -90);
-  //turn right 90 degrees and go straight 
-  continueUntilDone(10, 90);
-  //turn right 90 degrees and go straight 
-  continueUntilDone(10, 90);
+  Serial.println("turn 180");
+  turn(200);
+  Serial.println("go straight and turn left");
+  continueUntilDone(15, -100);
+  Serial.println("go straight and turn left");
+  continueUntilDone(15, -100);
+  Serial.println("go straight and turn right");
+  continueUntilDone(40, 100);
+  Serial.println("go straight and turn right");
+  continueUntilDone(15, -100);
 
   //update location
   robotLocation = HOSPITAL;
@@ -263,7 +269,7 @@ void handleKeyPress(int16_t keyPress)
    /*
   button for starting a round-- switches back to drive
   */
-if (keyPress == 1){
+if (keyPress == 16){
   Serial.println ("START");
   drive();
   robotState = ROBOT_DRIVE;
