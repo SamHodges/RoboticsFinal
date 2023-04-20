@@ -240,7 +240,7 @@ void peopleToHospital(){
   Serial.println("go straight and turn right");
   continueUntilDone(15, 100);
   Serial.println("go straight and turn right");
-  continueUntilDone(70, 100);
+  continueUntilDone(65, 100);
   Serial.println("go straight and turn left");
   continueUntilDone(15, -100);
 
