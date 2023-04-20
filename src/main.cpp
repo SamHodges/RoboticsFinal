@@ -204,6 +204,7 @@ void peopleToHospital(){
 
   //update location
   robotLocation = HOSPITAL;
+  robotState = ROBOT_IDLE;
 }
 
 
