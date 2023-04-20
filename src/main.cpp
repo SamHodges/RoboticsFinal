@@ -100,6 +100,8 @@ void continueUntilDone(int distanceToWall, int angle){
   */
 
  // RIGHT: positive angle!
+ distanceReading();
+ Serial.println(distance);
 
  while (distance > distanceToWall) {
   distanceReading();
@@ -107,6 +109,7 @@ void continueUntilDone(int distanceToWall, int angle){
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
  }
  chassis.turnFor(-angle, turnSpeed, true);
+  distanceReading();
 }
 
 bool checkForFire(){
@@ -161,22 +164,27 @@ void startToFire(){
 
  // go forwards, turn right
  Serial.println("forward right!");
-  continueUntilDone(15, 90);
+  continueUntilDone(15, 100);
+   distanceReading();
  // go forwards, turn left
  Serial.println("forward left!");
- continueUntilDone(10, -90);
+ distanceReading();
+ Serial.println("new distance!");
+ distanceReading();
+ continueUntilDone(15, -100);
+ distanceReading();
  // forwards, turn left
  Serial.println("forward left!");
- continueUntilDone(10, -90);
+ continueUntilDone(15, -100);
  // forwards, turn right
  Serial.println("forward right!");
- continueUntilDone(50, 90);
+ continueUntilDone(50, 100);
  // forwards til close
  Serial.println("forward right!");
- continueUntilDone(10, 90);
+ continueUntilDone(15, 100);
  // forwards, right
  Serial.println("forward right!");
- continueUntilDone(20, 90);
+ continueUntilDone(30, 100);
  // switch to fire!
  robotLocation = FIRE;
  robotState = ROBOT_FIRE;
@@ -270,6 +278,7 @@ void handleKeyPress(int16_t keyPress)
  // emergency stop button
   if (keyPress == ENTER_SAVE){
     Serial.println("STOP");
+    // TODO: figure out how to make this work while also in drive mode
     idle();
     robotState = ROBOT_IDLE;
   }
