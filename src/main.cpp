@@ -61,7 +61,6 @@ void idle(void)
 void distanceReading(){
   distance = rangefinder.getDistance();
   delay(100);
-  Serial.println(distance);
   distance2 = rangefinder2.getDistance();
   delay(100);
 }
