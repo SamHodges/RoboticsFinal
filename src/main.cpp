@@ -348,7 +348,11 @@ void rescue(){
   2- lift and drop can to check we've grabbed it
   3- IF NOT, adjust and retry
   4- ONCE GRABBED, switch to drive 
+  
   */
+  robotLocation = PEOPLE;
+
+
 }
 
 void fire(){
