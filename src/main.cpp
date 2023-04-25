@@ -29,6 +29,10 @@ const int LED_PIN_EX2 = 18;
 const int FLAME_PIN = A11; 
 int flameSignal=analogRead(FLAME_PIN);
 
+//fan pin and speed
+const int FAN_PIN = 20; 
+const int FAN_SPEED = 255; 
+
 // Defines the robot states
 enum ROBOT_STATE {ROBOT_IDLE, ROBOT_DRIVE, ROBOT_FIRE, ROBOT_RESCUE, ROBOT_WAIT, ROBOT_FLEE};
 ROBOT_STATE robotState = ROBOT_RESCUE;
@@ -78,6 +82,7 @@ void setup()
   Serial.begin(115200);
   pinMode(LED_PIN_EX1, OUTPUT);
   pinMode(FLAME_PIN,INPUT);
+  pinMode(FAN_PIN,OUTPUT);
 
   chassis.init();
   chassis.setMotorPIDcoeffs(4, 0.02);
@@ -317,13 +322,27 @@ void rescue(){
 }
 
 void fire(){
+
+  
   /* OLIVIA
   TODO: put out fire
   1- adjust so facing fire
+  
+    //while senses flame, use the fan
+    //once flame is out, switch to drive and continue
+  
+    //
   2- blow flame out
   3- check flame is out with sensor
   4- switch to drive and continue
   */
+ if(checkForFire()){
+  analogWrite(FAN_PIN,FAN_SPEED);
+  Serial.println("Fan is turned on");
+ } else{
+  robotState=ROBOT_FLEE;
+ }
+
 }
 
 void wait(int time){
