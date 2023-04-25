@@ -268,6 +268,7 @@ void gateToFire(){
  //into fire
  continueUntilDone(30, -105);
  idle();
+ robotLocation = FIRE;
 }
 
 void fireToGate(){
