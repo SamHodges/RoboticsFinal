@@ -264,11 +264,17 @@ void peopleToHospital(){
 
 void gateToFire(){
   // TODO: if starting at gate, go from here to fire
- continueUntilDone(83.2, 115);
- //into fire
- continueUntilDone(30, -105);
- idle();
- robotLocation = FIRE;
+  continueUntilDone(83.2, 115);
+  //into fire
+  continueUntilDone(30, -105);
+  robotLocation = FIRE;
+  if (checkForFire()){
+  robotState = ROBOT_FIRE;
+  }
+  else{
+  robotState = ROBOT_FLEE;
+  }
+ 
 }
 
 void fireToGate(){
@@ -276,8 +282,8 @@ void fireToGate(){
   turn(-100);
   continueUntilDone(25, -100);
   continueUntilDone(30, 210);
-  idle();
   robotLocation = GATE;
+  robotState = ROBOT_IDLE;
 }
 
 void fire1ToFire2(){
@@ -351,7 +357,7 @@ void rescue(){
   
   */
   robotLocation = PEOPLE;
-
+  //state ?
 
 }
 
