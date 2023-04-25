@@ -129,7 +129,7 @@ void continueUntilDone(int distanceToWall, int angle){
 bool checkForFire(){
   // TODO: check if there's fire, if there is return true - OLIVIA
   fireReading();
-  if (flameSignal < 100){
+  if (flameSignal < 350){
     return true;
   } else {
     return false;
@@ -305,8 +305,7 @@ void handleKeyPress(int16_t keyPress)
 
 if (keyPress == 16){ // key code for 1
   Serial.println ("START");
-  drive();
-  robotState = ROBOT_DRIVE;
+  robotState = ROBOT_FIRE;
 }
 
 }
@@ -321,23 +320,35 @@ void rescue(){
   */
 }
 
-void fire(){
- if(checkForFire()){
-  analogWrite(FAN_PIN,FAN_SPEED);
-  Serial.println("Fan is turned on");
- } else{
-  robotState=ROBOT_FLEE;
- }
-
-}
-
 void wait(int time){
   /*
   Wait function while other robot goes wherever
   */
   delay(time);
-  robotState = ROBOT_DRIVE;
+  robotState=ROBOT_DRIVE;
 }
+
+void fire(){
+  Serial.println((String)"flame sensor reading:" + flameSignal);
+ if(checkForFire()){
+  analogWrite(FAN_PIN,FAN_SPEED);
+  Serial.println("Fan is turned on");
+ /* wait(3); //wait
+  analogWrite(FAN_PIN,0); //turn off fan
+  if(checkForFire()){ //check again
+    analogWrite(FAN_PIN,FAN_SPEED);
+    Serial.println("Fan is turned on");
+  }
+  wait(10);*/
+  analogWrite(FAN_PIN,0); //turn off fan 
+  Serial.println("Fan is turned off");
+  robotState=ROBOT_RESCUE; //then rescue
+ } else {
+  robotState=ROBOT_FLEE;
+ }
+
+}
+
 
 // main loop
 void loop()
