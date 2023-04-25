@@ -351,20 +351,6 @@ void rescue(){
 }
 
 void fire(){
-
-  
-  /* OLIVIA
-  TODO: put out fire
-  1- adjust so facing fire
-  
-    //while senses flame, use the fan
-    //once flame is out, switch to drive and continue
-  
-    //
-  2- blow flame out
-  3- check flame is out with sensor
-  4- switch to drive and continue
-  */
  if(checkForFire()){
   analogWrite(FAN_PIN,FAN_SPEED);
   Serial.println("Fan is turned on");
