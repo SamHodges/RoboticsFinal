@@ -39,7 +39,7 @@ ROBOT_STATE robotState = ROBOT_IDLE;
 
 // define robot location
 enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE, GATE};
-ROBOT_LOCATION robotLocation = GATE;
+ROBOT_LOCATION robotLocation = INITIAL;
 
 // TODO: find a better base and turn speed
 float baseSpeed = 20.0;
@@ -181,7 +181,6 @@ void startToFire(){
   */
 
  Serial.println("switching to fire");
- robotState = ROBOT_FIRE;
  robotLocation = FIRE;
 
  // go forwards, turn right
@@ -207,9 +206,12 @@ void startToFire(){
  Serial.println("into the fire!");
  continueUntilDone(30, -105);
 
- Serial.print("robot state? ");
- Serial.println(String(robotState == ROBOT_FIRE));
-
+  if (checkForFire()){
+  robotState = ROBOT_FIRE;
+ }
+ else{
+  robotState = ROBOT_FLEE;
+ }
 
 }
 
@@ -302,7 +304,6 @@ void drive(){
   case INITIAL:
     startToFire();
     Serial.print("robot state? ");
-    Serial.println(String(robotState == ROBOT_FIRE));
     break;
   case PEOPLE:
     peopleToHospital();
@@ -334,8 +335,7 @@ void handleKeyPress(int16_t keyPress)
 if (keyPress == 16){ // key code for 1
   Serial.println ("START");
   // Serial.println("switching to drive");
-  // robotState = ROBOT_DRIVE;
-  fire1ToFire2();
+  robotState = ROBOT_DRIVE;
 }
 
 }
@@ -365,7 +365,6 @@ void wait(int time){
   */
   delay(time);
   Serial.println("switching to drive");
-  robotState = ROBOT_DRIVE;
 }
 
 // main loop
