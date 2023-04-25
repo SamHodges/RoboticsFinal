@@ -39,7 +39,7 @@ ROBOT_STATE robotState = ROBOT_IDLE;
 
 // define robot location
 enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE, GATE};
-ROBOT_LOCATION robotLocation = GATE;
+ROBOT_LOCATION robotLocation = INITIAL;
 
 // TODO: find a better base and turn speed
 float baseSpeed = 20.0;
@@ -266,6 +266,7 @@ void gateToFire(){
  //into fire
  continueUntilDone(30, -105);
  idle();
+ robotLocation = FIRE;
 }
 
 void fireToGate(){
