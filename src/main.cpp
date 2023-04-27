@@ -132,23 +132,12 @@ void goStraight(int distanceToWall){
 
   while (distance > distanceToWall) {
     distanceReading();
+    Serial.println(distance);
     chassis.setWheelSpeeds(5,5);
- }
+  }
+  Serial.println("hi, no while loop");
+  chassis.setWheelSpeeds(0,0);
 
-}
-void continueUntilDone(int distanceToWall, int angle){
-  /*
-  drive forwards or turn until you're done, then turn until done
-  1- check sensors
-  2- continue movement while checking sensors
-  TODO: potentially add PID, but don't have to, eg use wall following to not get off track
-  */
-
-  while (distance > distanceToWall) {
-    distanceReading();
-    chassis.setWheelSpeeds(5,5);
- }
- chassis.setWheelSpeeds(0,0);
 }
 
 /**
@@ -156,15 +145,15 @@ void continueUntilDone(int distanceToWall, int angle){
  * then turns until correct wall distance is reached again
 */
 void continueUntilDone(int distanceToWall, int angle){
- distanceReading();
+  distanceReading();
 
- while (distance > distanceToWall) {
+  while (distance > distanceToWall) {
   distanceReading();
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
- }
- chassis.turnFor(-angle, turnSpeed, true);
- Serial.println("wait!");
- delay(5);
+  }
+  chassis.turnFor(-angle, turnSpeed, true);
+  Serial.println("wait!");
+  delay(5);
   distanceReading();
 }
 /**
@@ -424,17 +413,17 @@ void robot2FireToGate(){
   robotLocation = GATE;
 }
 
-void robot2FireToGate(){
-// turn left
-  turn(-90);
-  // go straight, turn left
-  continueUntilDone(30, -90);
-  // go out gate, turn 180
-  continueUntilDone(30, 180);
-  // change location + state
-  robotState = ROBOT_IDLE;
-  robotLocation = GATE;
-}
+// void robot2FireToGate(){
+// // turn left
+//   turn(-90);
+//   // go straight, turn left
+//   continueUntilDone(30, -90);
+//   // go out gate, turn 180
+//   continueUntilDone(30, 180);
+//   // change location + state
+//   robotState = ROBOT_IDLE;
+//   robotLocation = GATE;
+// }
 
 
 /**
@@ -559,20 +548,14 @@ void rescue(){
   servo.writeMicroseconds(SERVO_UP);
   distanceReading();
   Serial.println(distance);
-  goStraight(3);
+  goStraight(4);
   distanceReading();
   Serial.println(distance);
-  
 
-  while (distance < 5) {
-    Serial.println(distance);
-    servo.writeMicroseconds(SERVO_UP);
-    delay(2000);
-    servo.writeMicroseconds(SERVO_DOWN);
-    delay(2000);
-    distanceReading();
-  }
+  servo.writeMicroseconds(SERVO_DOWN);
+
   distanceReading();
+
   //robotLocation = PEOPLE;
   //robotState = ROBOT_DRIVE;
   idle();
