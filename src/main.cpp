@@ -21,7 +21,7 @@ float distance2 = rangefinder2.getDistance();
 // set up chassis
 Chassis chassis(7.2, 1440, 12.7); //13.5 instead of 12.7
 
-//Set up servo motor
+// Set up servo motor
 Servo32U4 servo;
 int SERVO_DOWN = 1000;
 int SERVO_UP = 2000;
@@ -34,7 +34,7 @@ const int LED_PIN_EX2 = 18;
 const int FLAME_PIN = A11; 
 int flameSignal=analogRead(FLAME_PIN);
 
-//fan pin and speed
+// fan pin and speed
 const int FAN_PIN = 20; 
 const int FAN_SPEED = 255; 
 
@@ -42,31 +42,34 @@ const int FAN_SPEED = 255;
 enum ROBOT_STATE {ROBOT_IDLE, ROBOT_DRIVE, ROBOT_FIRE, ROBOT_RESCUE, ROBOT_WAIT, ROBOT_FLEE};
 ROBOT_STATE robotState = ROBOT_IDLE;
 
-// define robot location
+// Define robot location
 enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE, GATE};
 ROBOT_LOCATION robotLocation = INITIAL;
 
-// TODO: find a better base and turn speed
+// Base and turn speed
 float baseSpeed = 20.0;
 float turnSpeed = 100.0;
 
-
-// set LED function
+/**
+ * Function to set LED
+*/
 void setLED(int pin, bool value)
 {
-  // Serial.println("setLED()");
   digitalWrite(pin, value);
 }
 
-
-// idle() go to IDLE
+/**
+ * Switches the robot state to idle
+*/
 void idle(void)
 {
   chassis.idle();
   robotState = ROBOT_IDLE;
 }
 
-// TODO: add white line sensing method so we can check if we've entered an area
+/**
+ * Add white line sensing method so we can check if we've entered an area
+*/
 
 void distanceReading(){
   distance = rangefinder.getDistance();
@@ -75,11 +78,18 @@ void distanceReading(){
   delay(100);
 }
 
+/**
+ * Activates the fire sensor 
+*/
+
 void fireReading(){
   flameSignal=analogRead(FLAME_PIN);
 }
 
-// standard setup
+/**
+ * Standard setup method
+*/
+
 void setup() 
 {
   // This will initialize the Serial at a baud rate of 115200 for prints
@@ -96,31 +106,29 @@ void setup()
   // Initializes the IR decoder
   decoder.init();
 
-  // initialize rangefinder 
+  // Initialize rangefinder 
   rangefinder.init();
   rangefinder2.init();
 
-  // initializes servo motor
+  // Initializes servo motor
   servo.attach();
   servo.setMinMaxMicroseconds(SERVO_DOWN, SERVO_UP);
   Serial.println("/setup()");
 }
 
+/**
+ *  Method that turns the robot the amount of the given angle
+*/
 void turn(int angle){
   chassis.turnFor(-angle, turnSpeed, true);
 }
 
+/**
+ * Drives forward until certain distance away from wall
+ * then turns until correct wall distance is reached again
+*/
 void continueUntilDone(int distanceToWall, int angle){
-  /*
-  drive forwards or turn until you're done, then turn until done
-  1- check sensors
-  2- continue movement while checking sensors
-
-  TODO: potentially add PID, but don't have to, eg use wall following to not get off track
-  */
-
- // RIGHT: positive angle!
-
+  
  distanceReading();
 
  while (distance > distanceToWall) {
@@ -132,9 +140,12 @@ void continueUntilDone(int distanceToWall, int angle){
  delay(5);
   distanceReading();
 }
-
+/**
+ * Checks if there is a fire sensed
+ * If a fire is sensed return true.
+*/
 bool checkForFire(){
-  // TODO: check if there's fire, if there is return true - OLIVIA
+  
   fireReading();
   if (flameSignal < 350){
     return true;
@@ -143,71 +154,72 @@ bool checkForFire(){
   }
 }
 
+/**
+ * Directs the robot from the hospital to the fire
+*/
+
 void hospitalToFire(){
-  /*
-  goes from hospital to fire
-
-  Note: our fire location is the top one, use the route that goes next to the wall furtherst from
-  fires, then crosses through the middle towards fire (just trying to avoid other robot)
-  
-  TODO: test values!
-
-  */
 
  // turn away from hospital
   turn(110);
+
  // go forwards, turn left
  continueUntilDone(30, -95);
-  // forwards (center line), turn left
+
+ // forwards (center line), turn left
  continueUntilDone(126, -85);
+
  // long forwards, turn right
  continueUntilDone(85, 35);
   continueUntilDone(35, 105);
+
  // go forwards, turn right
  continueUntilDone(83.2, 115);
 
- //into fire
+ // into fire
  continueUntilDone(30, -105);
+
  // switch to fire!!
  robotLocation = FIRE;
  if (checkForFire()){
   robotState = ROBOT_FIRE;
  }
+
  else{
   robotState = ROBOT_FLEE;
  }
 }
 
+/**
+ * Directs the robot from the fire department to the fire
+*/
+
 void startToFire(){
+
   Serial.println("Start!");
-/*
-  Note: our start location is further into the fire department, as in the other robot is going first
-  fire location is the top one, use the route that goes next to the wall furtherst from
-  fires, then crosses through the middle towards fire (just trying to avoid other robot)
-  
-  TODO: test these distances!!!!!
-  */
 
  Serial.println("switching to fire");
+
  robotLocation = FIRE;
 
- // go forwards, turn right
- //Serial.println("forward right!");
- //continueUntilDone(15, 100);
  // go forwards, turn left
  Serial.println("forward left!");
  Serial.println("new distance!");
  distanceReading();
  continueUntilDone(25, -90);
+
  // forwards, turn left
  Serial.println("forward left!");
  continueUntilDone(20, -90);
+
  // forwards, turn right
  Serial.println("forward right!");
  continueUntilDone(130, 120);
+
  // forwards til close
  Serial.println("forward right!");
  continueUntilDone(35, 105);
+
  // forwards, right
  Serial.println("forward right!");
  continueUntilDone(85, 115);
@@ -223,59 +235,51 @@ void startToFire(){
 
 }
 
+/**
+ * Directs the robot from the fire to the people in need of rescue
+*/
+
 void fireToPeople(){
 
-  /*
-  go from fire to people
-
-  Note: our fire location is the top one
-
-  TODO: test values!
-  */
-
-  // straight a bit, then right
+ // straight a bit, then right
   continueUntilDone(57, 100);
+
  // pickup time!
  robotLocation = PEOPLE;
  robotState = ROBOT_RESCUE;
 
 }
 
-void peopleToHospital(){
-/* LAURA
-  TODO: write this function to drive from people to the hospital
-  1- write function, using ultrasonic sensor and knowledge of walls/turns
-  1b- maybe add PID for straight wall follow? Optional and may not work
-  2- update location
+/**
+ * Directs the robot from the rescue zone to the hospital
+*/
 
-  Note: our fire location is the top one, use the route that goes next to the wall furtherst from
-  fires, then crosses through the middle towards fire (just trying to avoid other robot)
-  */
-  Serial.println("Start!");
-  Serial.println("turn 180");
+void peopleToHospital(){
+
+  // Route from the rescue zone to the hospital
   turn(200);
-  Serial.println("go straight and turn left");
   continueUntilDone(25, -95);
-  Serial.println("go straight and turn left");
   continueUntilDone(25, -80);
-  Serial.println("go straight and turn right");
   continueUntilDone(30, 110);
-  Serial.println("go straight and turn right");
-  continueUntilDone(65, 110);
-  Serial.println("go straight and turn left");
   continueUntilDone(60, 110);
 
-  //update location
+  // update location
   robotLocation = HOSPITAL;
   robotState = ROBOT_IDLE;
 }
 
+/**
+ * When starting at the gate, directs the robot from the gate to the fire
+*/
+
 void gateToFire(){
-  // TODO: if starting at gate, go from here to fire
+
+ // Route from gate to fire
   continueUntilDone(83.2, 115);
-  //into fire
   continueUntilDone(30, -105);
   robotLocation = FIRE;
+
+  // Once location is reached, check for fire
   if (checkForFire()){
   robotState = ROBOT_FIRE;
   }
@@ -285,8 +289,14 @@ void gateToFire(){
  
 }
 
+/**
+ * If there is no fire found, go out of the gate 
+ * and set robot state back to idle
+*/
+
 void fireToGate(){
-  // if no fire, go out of gate, go back to idle
+ 
+ // Route from fire to gate
   turn(-100);
   continueUntilDone(25, -100);
   continueUntilDone(30, 210);
@@ -294,7 +304,14 @@ void fireToGate(){
   robotState = ROBOT_IDLE;
 }
 
+
+ /**
+  * Directs the robot from the first fire to the second fire
+ */
+
 void fire1ToFire2(){
+
+  // Route from fire 1 to fire 2
   turn(-100);
   continueUntilDone(25, -100);
   continueUntilDone(20, -80);
@@ -304,25 +321,37 @@ void fire1ToFire2(){
   continueUntilDone(30, -100);
 }
 
+/**
+ * Calls the methods to direct the robot from place to place
+*/
 
 void drive(){
-  //LAURA
+  
   switch (robotLocation)
   {
+    // If at the fire , go rescue the people
   case FIRE:
-    Serial.println("fire tp people time...");
+    Serial.println("fire to people time...");
     fireToPeople();
     break;
+
+    // If at the hospital, go to the fire
   case HOSPITAL:
     hospitalToFire();
     break;
+
+    // If at the starting location, go to the fire
   case INITIAL:
     startToFire();
     Serial.print("robot state? ");
     break;
+
+    // If at the rescue zone, go to the hospital 
   case PEOPLE:
     peopleToHospital();
     break;
+
+    // If at the gate, drive to the fire
   case GATE:
     gateToFire();
     break;
@@ -331,30 +360,37 @@ void drive(){
   }
 }
 
-// handle key presses
+/**
+ * Allows the robots actions to relate to the buttons pressed on the remote
+*/
+
 void handleKeyPress(int16_t keyPress)
 {
+
   Serial.println(keyPress);
+
  // emergency stop button
   if (keyPress == ENTER_SAVE){
     Serial.println("STOP");
-    // TODO: figure out how to make this work while also in drive mode
     idle();
     robotState = ROBOT_IDLE;
   }
 
-   /*
-  button for starting a round-- switches back to drive
-  */
+   
+ // Button for starting around, switches back to drive
 
-if (keyPress == 16){ // key code for 1
-  Serial.println ("START");
-  // Serial.println("switching to drive");
-  robotState = ROBOT_DRIVE;
+  if (keyPress == 16){ // key code for 1
+    Serial.println ("START");
+    // Serial.println("switching to drive");
+    robotState = ROBOT_DRIVE;
+    
+  }
+
 }
 
-}
-
+/**
+ *  Method that activates the robots arm in order to rescue the people
+*/
 void rescue(){
   /* LAURA
   TODO: rescue people
@@ -367,34 +403,24 @@ void rescue(){
 
 }
 
-void fire(){
- if(checkForFire()){
-  analogWrite(FAN_PIN,FAN_SPEED);
-  Serial.println("Fan is turned on");
- } else{
-  robotState=ROBOT_FLEE;
- }
-}
-
-void wait(int time){
-  /*
+ /*
   Wait function while other robot goes wherever
   */
+
+void wait(int time){
+ 
   delay(time);
 }
+
+/**
+ * Method to activate fan if a fire is sensed
+*/
 
 void fire(){
   Serial.println((String)"flame sensor reading:" + flameSignal);
  if(checkForFire()){
   analogWrite(FAN_PIN,FAN_SPEED);
   Serial.println("Fan is turned on");
- /* wait(3); //wait
-  analogWrite(FAN_PIN,0); //turn off fan
-  if(checkForFire()){ //check again
-    analogWrite(FAN_PIN,FAN_SPEED);
-    Serial.println("Fan is turned on");
-  }
-  wait(10);*/
   analogWrite(FAN_PIN,0); //turn off fan 
   Serial.println("Fan is turned off");
   robotState=ROBOT_RESCUE; //then rescue
@@ -405,7 +431,9 @@ void fire(){
 }
 
 
-// main loop
+/**
+ * Method to loop through all the different robot states
+*/
 void loop()
 {
   // Checks for a key press on the remote
@@ -420,12 +448,14 @@ void loop()
   */
   switch(robotState)
   {
+    // Sets the robot into motion
     case ROBOT_DRIVE:
       setLED(LED_PIN_EX1, HIGH);
       setLED(LED_PIN_EX2, HIGH);
       drive();
       break;
     
+    // Activates the methods to put out the fire
     case ROBOT_FIRE:
       Serial.println("FIRE!");
       setLED(LED_PIN_EX1, HIGH);
@@ -433,23 +463,27 @@ void loop()
       fire();
       break;
 
+    // Activates the methods to save the people
     case ROBOT_RESCUE:
       setLED(LED_PIN_EX1, LOW);
       setLED(LED_PIN_EX2, HIGH);
       rescue();
       break;
 
+    // Waits for the other robot
     case ROBOT_WAIT:
       setLED(LED_PIN_EX1, LOW);
       setLED(LED_PIN_EX2, LOW);
       wait(10);
       break;
     
+    // Stops the robot and puts it into idle
     case ROBOT_IDLE:
       setLED(LED_PIN_EX1, LOW);
       setLED(LED_PIN_EX2, LOW);
       break;
 
+    // Calls the method to send the robot outside the gate  
     case ROBOT_FLEE:
       setLED(LED_PIN_EX1, HIGH);
       setLED(LED_PIN_EX2, HIGH);
