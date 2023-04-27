@@ -366,11 +366,28 @@ void robot2HospitalToFire(){
 }
 
 void robot2FireToGate(){
+  // turn left
+  turn(-90);
+  // go straight, turn left
+  continueUntilDone(30, -90);
+  // go out gate, turn 180
+  continueUntilDone(30, 180);
+  // change location + state
+  robotState = ROBOT_IDLE;
+  robotLocation = GATE;
 
 }
 
 void robot2GateToFire(){
-
+  //into fire
+  continueUntilDone(30, -90);
+  robotLocation = FIRE;
+  if (checkForFire()){
+  robotState = ROBOT_FIRE;
+  }
+  else{
+  robotState = ROBOT_FLEE;
+  }
 }
 
 void robot1Drive(){
