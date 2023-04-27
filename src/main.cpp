@@ -23,8 +23,8 @@ Chassis chassis(7.2, 1440, 12.7); //13.5 instead of 12.7
 
 //Set up servo motor
 Servo32U4 servo;
-int SERVO_DOWN = 1000;
-int SERVO_UP = 2500;
+int SERVO_DOWN = 4000;
+int SERVO_UP = 4000;
 
 // set up LEDs
 const int LED_PIN_EX1 = 12;
@@ -40,7 +40,7 @@ const int FAN_SPEED = 255;
 
 // Defines the robot states
 enum ROBOT_STATE {ROBOT_IDLE, ROBOT_DRIVE, ROBOT_FIRE, ROBOT_RESCUE, ROBOT_WAIT, ROBOT_FLEE};
-ROBOT_STATE robotState = ROBOT_RESCUE;
+ROBOT_STATE robotState = ROBOT_FIRE;
 
 // define robot location
 enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE, GATE};
@@ -485,7 +485,7 @@ void rescue(){
   servo.writeMicroseconds(SERVO_UP);
   distanceReading();
   Serial.println(distance);
-  goStraight(4);
+  goStraight(3);
   distanceReading();
   Serial.println(distance);
   
