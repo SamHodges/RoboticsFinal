@@ -242,7 +242,6 @@ void robot1FireToPeople(){
   // straight a bit, then right
   continueUntilDone(57, 100);
  // pickup time!
- //robotLocation = PEOPLE;
  robotState = ROBOT_RESCUE;
 
 }
@@ -483,12 +482,15 @@ void rescue(){
   4- ONCE GRABBED, switch to drive 
   */
   //arm down and go straight 
+  servo.writeMicroseconds(SERVO_UP);
+  distanceReading();
+  Serial.println(distance);
   goStraight(4);
   distanceReading();
   Serial.println(distance);
-  servo.writeMicroseconds(SERVO_UP);
+  
 
-  while (distance < 4) {
+  while (distance < 5) {
     Serial.println(distance);
     servo.writeMicroseconds(SERVO_UP);
     delay(2000);
@@ -497,6 +499,7 @@ void rescue(){
     distanceReading();
   }
   distanceReading();
+  //robotLocation = PEOPLE;
   //robotState = ROBOT_DRIVE;
   idle();
   Serial.println("people rescued!");
