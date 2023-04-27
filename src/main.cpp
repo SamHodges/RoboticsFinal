@@ -391,13 +391,6 @@ void fire(){
  if(checkForFire()){
   analogWrite(FAN_PIN,FAN_SPEED);
   Serial.println("Fan is turned on");
- /* wait(3); //wait
-  analogWrite(FAN_PIN,0); //turn off fan
-  if(checkForFire()){ //check again
-    analogWrite(FAN_PIN,FAN_SPEED);
-    Serial.println("Fan is turned on");
-  }
-  wait(10);*/
   analogWrite(FAN_PIN,0); //turn off fan 
   Serial.println("Fan is turned off");
   robotState=ROBOT_RESCUE; //then rescue
