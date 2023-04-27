@@ -423,15 +423,6 @@ void rescue(){
 
 }
 
-void fire(){
- if(checkForFire()){
-  analogWrite(FAN_PIN,FAN_SPEED);
-  Serial.println("Fan is turned on");
- } else{
-  robotState=ROBOT_FLEE;
- }
-}
-
 void wait(int time){
   /*
   Wait function while other robot goes wherever
