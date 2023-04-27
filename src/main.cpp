@@ -113,6 +113,14 @@ void turn(int angle){
   chassis.turnFor(-angle, turnSpeed, true);
 }
 
+void goStraight(int distanceToWall){
+
+  while (distance > distanceToWall) {
+    distanceReading();
+    chassis.setWheelSpeeds(5,5);
+ }
+ chassis.setWheelSpeeds(0,0);
+}
 void continueUntilDone(int distanceToWall, int angle){
   /*
   drive forwards or turn until you're done, then turn until done
@@ -457,12 +465,13 @@ void rescue(){
   3- IF NOT, adjust and retry (check with rangefinder sensor?)
   4- ONCE GRABBED, switch to drive 
   */
+  //arm down and go straight 
+  goStraight(4);
   distanceReading();
   Serial.println(distance);
-  //arm down and go straight 
-  continueUntilDone()
+  servo.writeMicroseconds(SERVO_UP);
+
   while (distance < 4) {
-    
     Serial.println(distance);
     servo.writeMicroseconds(SERVO_UP);
     delay(2000);
