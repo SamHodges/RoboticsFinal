@@ -113,6 +113,14 @@ void turn(int angle){
   chassis.turnFor(-angle, turnSpeed, true);
 }
 
+void goStraight(int distanceToWall){
+
+  while (distance > distanceToWall) {
+    distanceReading();
+    chassis.setWheelSpeeds(5,5);
+ }
+ chassis.setWheelSpeeds(0,0);
+}
 void continueUntilDone(int distanceToWall, int angle){
   /*
   drive forwards or turn until you're done, then turn until done
@@ -234,7 +242,6 @@ void robot1FireToPeople(){
   // straight a bit, then right
   continueUntilDone(57, 100);
  // pickup time!
- //robotLocation = PEOPLE;
  robotState = ROBOT_RESCUE;
 
 }
@@ -366,11 +373,28 @@ void robot2HospitalToFire(){
 }
 
 void robot2FireToGate(){
+  // turn left
+  turn(-90);
+  // go straight, turn left
+  continueUntilDone(30, -90);
+  // go out gate, turn 180
+  continueUntilDone(30, 180);
+  // change location + state
+  robotState = ROBOT_IDLE;
+  robotLocation = GATE;
 
 }
 
 void robot2GateToFire(){
-
+  //into fire
+  continueUntilDone(30, -90);
+  robotLocation = FIRE;
+  if (checkForFire()){
+  robotState = ROBOT_FIRE;
+  }
+  else{
+  robotState = ROBOT_FLEE;
+  }
 }
 
 void robot1Drive(){
@@ -458,12 +482,16 @@ void rescue(){
   3- IF NOT, adjust and retry (check with rangefinder sensor?)
   4- ONCE GRABBED, switch to drive 
   */
+  //arm down and go straight 
+  servo.writeMicroseconds(SERVO_UP);
   distanceReading();
   Serial.println(distance);
-  //arm down and go straight 
-  //continueUntilDone();
-  while (distance < 4) {
-    
+  goStraight(4);
+  distanceReading();
+  Serial.println(distance);
+  
+
+  while (distance < 5) {
     Serial.println(distance);
     servo.writeMicroseconds(SERVO_UP);
     delay(2000);
@@ -472,6 +500,7 @@ void rescue(){
     distanceReading();
   }
   distanceReading();
+  //robotLocation = PEOPLE;
   //robotState = ROBOT_DRIVE;
   idle();
   Serial.println("people rescued!");
