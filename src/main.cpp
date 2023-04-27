@@ -24,7 +24,7 @@ Chassis chassis(7.2, 1440, 12.7); //13.5 instead of 12.7
 //Set up servo motor
 Servo32U4 servo;
 int SERVO_DOWN = 1000;
-int SERVO_UP = 2000;
+int SERVO_UP = 2500;
 
 // set up LEDs
 const int LED_PIN_EX1 = 12;
@@ -40,11 +40,11 @@ const int FAN_SPEED = 255;
 
 // Defines the robot states
 enum ROBOT_STATE {ROBOT_IDLE, ROBOT_DRIVE, ROBOT_FIRE, ROBOT_RESCUE, ROBOT_WAIT, ROBOT_FLEE};
-ROBOT_STATE robotState = ROBOT_IDLE;
+ROBOT_STATE robotState = ROBOT_RESCUE;
 
 // define robot location
 enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE, GATE};
-ROBOT_LOCATION robotLocation = INITIAL;
+ROBOT_LOCATION robotLocation = FIRE;
 
 // TODO: find a better base and turn speed
 float baseSpeed = 20.0;
@@ -236,7 +236,7 @@ void fireToPeople(){
   // straight a bit, then right
   continueUntilDone(57, 100);
  // pickup time!
- robotLocation = PEOPLE;
+ //robotLocation = PEOPLE;
  robotState = ROBOT_RESCUE;
 
 }
@@ -360,11 +360,26 @@ void rescue(){
   TODO: rescue people
   1- scoop up people
   2- lift and drop can to check we've grabbed it
-  3- IF NOT, adjust and retry
+  3- IF NOT, adjust and retry (check with rangefinder sensor?)
   4- ONCE GRABBED, switch to drive 
   */
-  
-
+  distanceReading();
+  Serial.println(distance);
+  //arm down and go straight 
+  continueUntilDone()
+  while (distance < 4) {
+    
+    Serial.println(distance);
+    servo.writeMicroseconds(SERVO_UP);
+    delay(2000);
+    servo.writeMicroseconds(SERVO_DOWN);
+    delay(2000);
+    distanceReading();
+  }
+  distanceReading();
+  //robotState = ROBOT_DRIVE;
+  idle();
+  Serial.println("people rescued!");
 }
 
 void fire(){
