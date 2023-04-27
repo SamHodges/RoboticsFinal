@@ -136,6 +136,20 @@ void goStraight(int distanceToWall){
  }
  chassis.setWheelSpeeds(0,0);
 }
+void continueUntilDone(int distanceToWall, int angle){
+  /*
+  drive forwards or turn until you're done, then turn until done
+  1- check sensors
+  2- continue movement while checking sensors
+  TODO: potentially add PID, but don't have to, eg use wall following to not get off track
+  */
+
+  while (distance > distanceToWall) {
+    distanceReading();
+    chassis.setWheelSpeeds(5,5);
+ }
+ chassis.setWheelSpeeds(0,0);
+}
 
 /**
  * Drives forward until certain distance away from wall
@@ -255,8 +269,7 @@ void robot1StartToFire(){
 void robot1FireToPeople(){
  // straight a bit, then right
   continueUntilDone(57, 100);
-
- //robotLocation = PEOPLE;
+ // pickup time!
  robotState = ROBOT_RESCUE;
 
 }
@@ -399,6 +412,17 @@ void robot2HospitalToFire(){
 /**
  * Calls the methods to direct the robot2 from the fire to the gate
 */
+void robot2FireToGate(){
+  // turn left
+  turn(-90);
+  // go straight, turn left
+  continueUntilDone(30, -90);
+  // go out gate, turn 180
+  continueUntilDone(30, 180);
+  // change location + state
+  robotState = ROBOT_IDLE;
+  robotLocation = GATE;
+}
 
 void robot2FireToGate(){
 // turn left
@@ -517,18 +541,30 @@ void handleKeyPress(int16_t keyPress)
     
   }
 
+
 }
 
 /**
  *  Method that activates the robots arm in order to rescue the people
 */
 void rescue(){
+  /* LAURA
+  TODO: rescue people
+  1- scoop up people
+  2- lift and drop can to check we've grabbed it
+  3- IF NOT, adjust and retry (check with rangefinder sensor?)
+  4- ONCE GRABBED, switch to drive 
+  */
+  //arm down and go straight 
+  servo.writeMicroseconds(SERVO_UP);
+  distanceReading();
+  Serial.println(distance);
   goStraight(4);
   distanceReading();
   Serial.println(distance);
-  servo.writeMicroseconds(SERVO_UP);
+  
 
-  while (distance < 4) {
+  while (distance < 5) {
     Serial.println(distance);
     servo.writeMicroseconds(SERVO_UP);
     delay(2000);
@@ -537,6 +573,7 @@ void rescue(){
     distanceReading();
   }
   distanceReading();
+  //robotLocation = PEOPLE;
   //robotState = ROBOT_DRIVE;
   idle();
   Serial.println("people rescued!");
@@ -558,15 +595,16 @@ void wait(int time){
 void fire(){
   Serial.println((String)"flame sensor reading:" + flameSignal);
  if(checkForFire()){
-  analogWrite(FAN_PIN,FAN_SPEED);
+  analogWrite(FAN_PIN,FAN_SPEED); //turn on the fan for 700 ms
   Serial.println("Fan is turned on");
+  delay(700);
   analogWrite(FAN_PIN,0); //turn off fan 
   Serial.println("Fan is turned off");
-  robotState=ROBOT_RESCUE; //then rescue
- } else {
-  robotState=ROBOT_FLEE;
+  robotState=ROBOT_DRIVE; //after turned off enter robot drive
+ } 
+ else{
+  robotState=ROBOT_FLEE; //if no fire, flee
  }
-
 }
 
 
