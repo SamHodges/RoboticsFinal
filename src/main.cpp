@@ -306,14 +306,58 @@ void robot2InitialToFire(){
   // go straight, turn right
   continueUntilDone(30, 90);
   //go straight, turn right
-  continueUntilDone(30, );
+  continueUntilDone(60, 90);
+  // go into fire and turn left
+  continueUntilDone(30, -90);
+
+  robotLocation = FIRE;
+
+  if (checkForFire()){
+  robotState = ROBOT_FIRE;
+ }
+ else{
+  robotState = ROBOT_FLEE;
+ }
+
 }
 
-void robot2FireToHospital(){
+void robot2FireToPeople(){
+continueUntilDone(57, 90);
+ // pickup time!
+ robotLocation = PEOPLE;
+ robotState = ROBOT_RESCUE;
 
+}
+
+void robot2PeopleToHospital(){
+  // turn 180
+  turn(180);
+  // straight turn left
+  continueUntilDone(30, -90);
+  // straight turn left
+  // TODO: test this distance for hospital
+  continueUntilDone(60, -90);
+  robotLocation = HOSPITAL; 
 }
 
 void robot2HospitalToFire(){
+  // turn 180
+  turn(180);
+  // forward then right
+  continueUntilDone(30, -90);
+   continueUntilDone(60, 90);
+  // go into fire and turn left
+  continueUntilDone(30, -90);
+
+  robotLocation = FIRE;
+
+  if (checkForFire()){
+    robotState = ROBOT_FIRE;
+  }
+  else{
+    robotState = ROBOT_FLEE;
+  }
+
 
 }
 
