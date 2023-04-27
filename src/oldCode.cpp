@@ -134,7 +134,7 @@ void goStraight(int distanceToWall){
     distanceReading();
     chassis.setWheelSpeeds(5,5);
  }
- chassis.setWheelSpeeds(0,0);
+
 }
 void continueUntilDone(int distanceToWall, int angle){
   /*
