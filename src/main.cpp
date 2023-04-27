@@ -115,7 +115,6 @@ void continueUntilDone(int distanceToWall, int angle){
   drive forwards or turn until you're done, then turn until done
   1- check sensors
   2- continue movement while checking sensors
-
   TODO: potentially add PID, but don't have to, eg use wall following to not get off track
   */
 
@@ -146,12 +145,10 @@ bool checkForFire(){
 void hospitalToFire(){
   /*
   goes from hospital to fire
-
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
   
   TODO: test values!
-
   */
 
  // turn away from hospital
@@ -227,9 +224,7 @@ void fireToPeople(){
 
   /*
   go from fire to people
-
   Note: our fire location is the top one
-
   TODO: test values!
   */
 
@@ -247,7 +242,6 @@ void peopleToHospital(){
   1- write function, using ultrasonic sensor and knowledge of walls/turns
   1b- maybe add PID for straight wall follow? Optional and may not work
   2- update location
-
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
   fires, then crosses through the middle towards fire (just trying to avoid other robot)
   */
@@ -304,6 +298,24 @@ void fire1ToFire2(){
   continueUntilDone(30, -100);
 }
 
+void robot2InitialToFire(){
+  // go straight, turn right
+  continueUntilDone(30, 90);
+  // go straight, turn right
+  continueUntilDone(30, 90);
+  // go straight, turn right
+  continueUntilDone(30, 90);
+  //go straight, turn right
+  continueUntilDone(30, );
+}
+
+void robot2FireToHospital(){
+
+}
+
+void robot2HospitalToFire(){
+
+}
 
 void drive(){
   //LAURA
@@ -451,5 +463,3 @@ void loop()
       break;
   }
 }
-
-
