@@ -356,8 +356,6 @@ void rescue(){
   4- ONCE GRABBED, switch to drive 
   
   */
-  robotLocation = PEOPLE;
-  //state ?
 
 }
 
