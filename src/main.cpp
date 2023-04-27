@@ -444,7 +444,8 @@ void handleKeyPress(int16_t keyPress)
 if (keyPress == 16){ // key code for 1
   Serial.println ("START");
   // Serial.println("switching to drive");
-  robotState = ROBOT_DRIVE;
+  robotState = ROBOT_FIRE;
+  robotLocation=FIRE;
 }
 
 }
@@ -460,7 +461,7 @@ void rescue(){
   distanceReading();
   Serial.println(distance);
   //arm down and go straight 
-  continueUntilDone()
+  //continueUntilDone();
   while (distance < 4) {
     
     Serial.println(distance);
@@ -486,15 +487,16 @@ void wait(int time){
 void fire(){
   Serial.println((String)"flame sensor reading:" + flameSignal);
  if(checkForFire()){
-  analogWrite(FAN_PIN,FAN_SPEED);
+  analogWrite(FAN_PIN,FAN_SPEED); //turn on the fan for 700 ms
   Serial.println("Fan is turned on");
+  delay(700);
   analogWrite(FAN_PIN,0); //turn off fan 
   Serial.println("Fan is turned off");
-  robotState=ROBOT_RESCUE; //then rescue
- } else {
-  robotState=ROBOT_FLEE;
+  robotState=ROBOT_DRIVE; //after turned off enter robot drive
+ } 
+ else{
+  robotState=ROBOT_FLEE; //if no fire, flee
  }
-
 }
 
 
