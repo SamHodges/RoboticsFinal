@@ -50,6 +50,9 @@ ROBOT_LOCATION robotLocation = INITIAL;
 float baseSpeed = 20.0;
 float turnSpeed = 100.0;
 
+// keep track of which robot it is
+int robotNumber = 1;
+
 
 // set LED function
 void setLED(int pin, bool value)
@@ -142,7 +145,7 @@ bool checkForFire(){
   }
 }
 
-void hospitalToFire(){
+void robot1HospitalToFire(){
   /*
   goes from hospital to fire
   Note: our fire location is the top one, use the route that goes next to the wall furtherst from
@@ -175,7 +178,7 @@ void hospitalToFire(){
  }
 }
 
-void startToFire(){
+void robot1StartToFire(){
   Serial.println("Start!");
 /*
   Note: our start location is further into the fire department, as in the other robot is going first
@@ -220,7 +223,7 @@ void startToFire(){
 
 }
 
-void fireToPeople(){
+void robot1FireToPeople(){
 
   /*
   go from fire to people
@@ -236,7 +239,7 @@ void fireToPeople(){
 
 }
 
-void peopleToHospital(){
+void robot1PeopleToHospital(){
 /* LAURA
   TODO: write this function to drive from people to the hospital
   1- write function, using ultrasonic sensor and knowledge of walls/turns
@@ -264,7 +267,7 @@ void peopleToHospital(){
   robotState = ROBOT_IDLE;
 }
 
-void gateToFire(){
+void robot1GateToFire(){
   // TODO: if starting at gate, go from here to fire
   continueUntilDone(83.2, 115);
   //into fire
@@ -279,7 +282,7 @@ void gateToFire(){
  
 }
 
-void fireToGate(){
+void robot1FireToGate(){
   // if no fire, go out of gate, go back to idle
   turn(-100);
   continueUntilDone(25, -100);
@@ -288,7 +291,7 @@ void fireToGate(){
   robotState = ROBOT_IDLE;
 }
 
-void fire1ToFire2(){
+void robot1TakeOver(){
   turn(-100);
   continueUntilDone(25, -100);
   continueUntilDone(20, -80);
@@ -296,9 +299,10 @@ void fire1ToFire2(){
   continueUntilDone(30, 100);
   continueUntilDone(60, 100);
   continueUntilDone(30, -100);
+  robotNumber = 2;
 }
 
-void robot2InitialToFire(){
+void robot2StartToFire(){
   // go straight, turn right
   continueUntilDone(30, 90);
   // go straight, turn right
@@ -361,26 +365,60 @@ void robot2HospitalToFire(){
 
 }
 
-void drive(){
+void robot2FireToGate(){
+
+}
+
+void robot2GateToFire(){
+
+}
+
+void robot1Drive(){
   //LAURA
   switch (robotLocation)
   {
   case FIRE:
     Serial.println("fire tp people time...");
-    fireToPeople();
+    robot1FireToPeople();
     break;
   case HOSPITAL:
-    hospitalToFire();
+    robot1HospitalToFire();
     break;
   case INITIAL:
-    startToFire();
+    robot1StartToFire();
     Serial.print("robot state? ");
     break;
   case PEOPLE:
-    peopleToHospital();
+    robot1PeopleToHospital();
     break;
   case GATE:
-    gateToFire();
+    robot1GateToFire();
+    break;
+  default:
+    break;
+  }
+}
+
+void robot2Drive(){
+  //LAURA
+  switch (robotLocation)
+  {
+  case FIRE:
+    Serial.println("fire tp people time...");
+    robot2FireToPeople();
+    break;
+  case HOSPITAL:
+    robot2HospitalToFire();
+    break;
+  case INITIAL:
+    robot2StartToFire();
+    Serial.print("robot state? ");
+    break;
+  case PEOPLE:
+    robot2PeopleToHospital();
+    break;
+  case GATE:
+    robot2GateToFire();
     break;
   default:
     break;
@@ -470,7 +508,12 @@ void loop()
     case ROBOT_DRIVE:
       setLED(LED_PIN_EX1, HIGH);
       setLED(LED_PIN_EX2, HIGH);
-      drive();
+      if (robotNumber == 1){
+        robot1Drive();
+      }
+      else{
+        robot2Drive();
+      }
       break;
     
     case ROBOT_FIRE:
@@ -500,7 +543,13 @@ void loop()
     case ROBOT_FLEE:
       setLED(LED_PIN_EX1, HIGH);
       setLED(LED_PIN_EX2, HIGH);
-      fireToGate();
+      if (robotNumber == 1){
+        robot1FireToGate();
+      }
+      else{
+        robot2FireToGate();
+      }
+      
       break;
 
     default:
