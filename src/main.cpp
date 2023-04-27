@@ -23,6 +23,8 @@ Chassis chassis(7.2, 1440, 12.7); //13.5 instead of 12.7
 
 //Set up servo motor
 Servo32U4 servo;
+int SERVO_DOWN = 1000;
+int SERVO_UP = 2000;
 
 // set up LEDs
 const int LED_PIN_EX1 = 12;
@@ -98,6 +100,9 @@ void setup()
   rangefinder.init();
   rangefinder2.init();
 
+  // initializes servo motor
+  servo.attach();
+  servo.setMinMaxMicroseconds(SERVO_DOWN, SERVO_UP);
   Serial.println("/setup()");
 }
 
