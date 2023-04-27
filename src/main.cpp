@@ -35,14 +35,14 @@ const int FAN_SPEED = 255;
 
 // Defines the robot states
 enum ROBOT_STATE {ROBOT_IDLE, ROBOT_DRIVE, ROBOT_FIRE, ROBOT_RESCUE, ROBOT_WAIT, ROBOT_FLEE};
-ROBOT_STATE robotState = ROBOT_RESCUE;
+ROBOT_STATE robotState = ROBOT_IDLE;
 
 // define robot location
 enum ROBOT_LOCATION {FIRE, HOSPITAL, INITIAL, PEOPLE, GATE};
-ROBOT_LOCATION robotLocation = PEOPLE;
+ROBOT_LOCATION robotLocation = INITIAL;
 
 // TODO: find a better base and turn speed
-float baseSpeed = 10.0;
+float baseSpeed = 20.0;
 float turnSpeed = 100.0;
 
 
@@ -66,7 +66,6 @@ void idle(void)
 void distanceReading(){
   distance = rangefinder.getDistance();
   delay(100);
-  Serial.println(distance);
   distance2 = rangefinder2.getDistance();
   delay(100);
 }
@@ -148,15 +147,19 @@ void hospitalToFire(){
   */
 
  // turn away from hospital
-  continueUntilDone(0, 180);
+  turn(110);
  // go forwards, turn left
- continueUntilDone(10, -90);
- // forwards (center line), turn left
- continueUntilDone(10, -90);
+ continueUntilDone(30, -95);
+  // forwards (center line), turn left
+ continueUntilDone(126, -85);
  // long forwards, turn right
-  continueUntilDone(50, 90);
+ continueUntilDone(85, 35);
+  continueUntilDone(35, 105);
  // go forwards, turn right
- continueUntilDone(20, 90);
+ continueUntilDone(83.2, 115);
+
+ //into fire
+ continueUntilDone(30, -105);
  // switch to fire!!
  robotLocation = FIRE;
  if (checkForFire()){
@@ -177,31 +180,38 @@ void startToFire(){
   TODO: test these distances!!!!!
   */
 
+ Serial.println("switching to fire");
+ robotLocation = FIRE;
+
  // go forwards, turn right
- Serial.println("forward right!");
- continueUntilDone(15, 100);
+ //Serial.println("forward right!");
+ //continueUntilDone(15, 100);
  // go forwards, turn left
  Serial.println("forward left!");
  Serial.println("new distance!");
  distanceReading();
- continueUntilDone(10, -100);
+ continueUntilDone(25, -90);
  // forwards, turn left
  Serial.println("forward left!");
- continueUntilDone(15, -100);
+ continueUntilDone(20, -90);
  // forwards, turn right
  Serial.println("forward right!");
- continueUntilDone(50, 100);
+ continueUntilDone(130, 120);
  // forwards til close
  Serial.println("forward right!");
- continueUntilDone(15, 100);
+ continueUntilDone(35, 105);
  // forwards, right
  Serial.println("forward right!");
- continueUntilDone(30, 100);
- // switch to fire!
- robotLocation = FIRE;
- robotState = ROBOT_FIRE;
- idle();
+ continueUntilDone(85, 115);
+ Serial.println("into the fire!");
+ continueUntilDone(30, -105);
 
+  if (checkForFire()){
+  robotState = ROBOT_FIRE;
+ }
+ else{
+  robotState = ROBOT_FLEE;
+ }
 
 }
 
@@ -215,10 +225,8 @@ void fireToPeople(){
   TODO: test values!
   */
 
- // turn left
-  continueUntilDone(0, -90);
- // straight a bit, then right
-  continueUntilDone(15, 90);
+  // straight a bit, then right
+  continueUntilDone(57, 100);
  // pickup time!
  robotLocation = PEOPLE;
  robotState = ROBOT_RESCUE;
@@ -239,15 +247,15 @@ void peopleToHospital(){
   Serial.println("turn 180");
   turn(200);
   Serial.println("go straight and turn left");
-  continueUntilDone(15, -100);
+  continueUntilDone(25, -95);
   Serial.println("go straight and turn left");
-  continueUntilDone(15, -100);
+  continueUntilDone(25, -80);
   Serial.println("go straight and turn right");
-  continueUntilDone(15, 100);
+  continueUntilDone(30, 110);
   Serial.println("go straight and turn right");
-  continueUntilDone(65, 100);
+  continueUntilDone(65, 110);
   Serial.println("go straight and turn left");
-  continueUntilDone(15, -100);
+  continueUntilDone(60, 110);
 
   //update location
   robotLocation = HOSPITAL;
@@ -256,10 +264,36 @@ void peopleToHospital(){
 
 void gateToFire(){
   // TODO: if starting at gate, go from here to fire
+  continueUntilDone(83.2, 115);
+  //into fire
+  continueUntilDone(30, -105);
+  robotLocation = FIRE;
+  if (checkForFire()){
+  robotState = ROBOT_FIRE;
+  }
+  else{
+  robotState = ROBOT_FLEE;
+  }
+ 
 }
 
 void fireToGate(){
   // if no fire, go out of gate, go back to idle
+  turn(-100);
+  continueUntilDone(25, -100);
+  continueUntilDone(30, 210);
+  robotLocation = GATE;
+  robotState = ROBOT_IDLE;
+}
+
+void fire1ToFire2(){
+  turn(-100);
+  continueUntilDone(25, -100);
+  continueUntilDone(20, -80);
+  continueUntilDone(150, 110);
+  continueUntilDone(30, 100);
+  continueUntilDone(60, 100);
+  continueUntilDone(30, -100);
 }
 
 
@@ -268,6 +302,7 @@ void drive(){
   switch (robotLocation)
   {
   case FIRE:
+    Serial.println("fire tp people time...");
     fireToPeople();
     break;
   case HOSPITAL:
@@ -275,6 +310,7 @@ void drive(){
     break;
   case INITIAL:
     startToFire();
+    Serial.print("robot state? ");
     break;
   case PEOPLE:
     peopleToHospital();
@@ -305,7 +341,8 @@ void handleKeyPress(int16_t keyPress)
 
 if (keyPress == 16){ // key code for 1
   Serial.println ("START");
-  robotState = ROBOT_FIRE;
+  // Serial.println("switching to drive");
+  robotState = ROBOT_DRIVE;
 }
 
 }
@@ -317,7 +354,20 @@ void rescue(){
   2- lift and drop can to check we've grabbed it
   3- IF NOT, adjust and retry
   4- ONCE GRABBED, switch to drive 
+  
   */
+  robotLocation = PEOPLE;
+  //state ?
+
+}
+
+void fire(){
+ if(checkForFire()){
+  analogWrite(FAN_PIN,FAN_SPEED);
+  Serial.println("Fan is turned on");
+ } else{
+  robotState=ROBOT_FLEE;
+ }
 }
 
 void wait(int time){
@@ -325,7 +375,6 @@ void wait(int time){
   Wait function while other robot goes wherever
   */
   delay(time);
-  robotState=ROBOT_DRIVE;
 }
 
 void fire(){
@@ -372,6 +421,7 @@ void loop()
       break;
     
     case ROBOT_FIRE:
+      Serial.println("FIRE!");
       setLED(LED_PIN_EX1, HIGH);
       setLED(LED_PIN_EX2, LOW);
       fire();
