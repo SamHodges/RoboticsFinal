@@ -53,6 +53,10 @@ float turnSpeed = 100.0;
 // keep track of which robot it is
 int robotNumber = 1;
 
+// line sensing
+int leftLineSensorReading = 0;
+int rightLineSensorReading = 0;
+
 
 /**
  * Function to set LED
@@ -119,7 +123,60 @@ void setup()
   servo.attach();
   servo.setMinMaxMicroseconds(SERVO_DOWN, SERVO_UP);
   Serial.println("/setup()");
+
+  // initializes line sensor
+  pinMode(LEFT_LINE_SENSE, INPUT);
+  pinMode(RIGHT_LINE_SENSE, INPUT);
 }
+
+/*
+  Read line sensing
+*/
+void lineSensing(){
+  leftLineSensorReading = analogRead(LEFT_LINE_SENSE);
+  rightLineSensorReading = analogRead(RIGHT_LINE_SENSE);
+}
+
+void handleLineFollowing(float baseSpeed)
+{
+  lineSensing();
+
+  int16_t error = leftLineSensorReading - rightLineSensorReading;
+  float turnEffort = error * 0.17; //edit k_p!
+  chassis.setTwist(baseSpeed, turnEffort);
+
+
+}
+
+bool checkIntersectionEvent()
+{
+  static bool prevIntersection = false;
+  int16_t whiteThreshold = 50;
+
+  bool retVal = false;
+
+
+  int16_t leftADC = analogRead(LEFT_LINE_SENSE);
+  int16_t rightADC = analogRead(RIGHT_LINE_SENSE);
+
+
+  // TODO, Section IV.4 step2: Add logic to check for intersection  
+  if (leftADC < whiteThreshold && rightADC < whiteThreshold){
+    switch(prevIntersection){
+      case true:
+        prevIntersection = false;
+        retVal = false;
+      case false:
+        prevIntersection = true;
+        retVal = true;
+    }
+  }
+
+
+  return retVal;
+}
+
+
 
 /**
  *  Method that turns the robot the amount of the given angle
@@ -136,20 +193,6 @@ void goStraight(int distanceToWall){
  }
 
 }
-void continueUntilDone(int distanceToWall, int angle){
-  /*
-  drive forwards or turn until you're done, then turn until done
-  1- check sensors
-  2- continue movement while checking sensors
-  TODO: potentially add PID, but don't have to, eg use wall following to not get off track
-  */
-
-  while (distance > distanceToWall) {
-    distanceReading();
-    chassis.setWheelSpeeds(5,5);
- }
- chassis.setWheelSpeeds(0,0);
-}
 
 /**
  * Drives forward until certain distance away from wall
@@ -163,8 +206,6 @@ void continueUntilDone(int distanceToWall, int angle){
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
  }
  chassis.turnFor(-angle, turnSpeed, true);
- Serial.println("wait!");
- delay(5);
   distanceReading();
 }
 /**
@@ -190,17 +231,41 @@ void robot1HospitalToFire(){
 
 
  // turn away from hospital
-  turn(110);
+  turn(180);
 
- // go forwards, turn left
- continueUntilDone(30, -95);
+  // line follow out of hospital
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
 
- // forwards (center line), turn left
- continueUntilDone(126, -85);
+  // turn left
+  turn(-100);
 
- // long forwards, turn right
- continueUntilDone(85, 35);
-  continueUntilDone(35, 105);
+ // line follow to fire
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+  // turn onto center line
+ turn(100);
+
+// go down center line
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+// keep going down center line
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ 
+ // turn right
+  turn(100);
+
+  // up to fire area
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
 
  // go forwards, turn right
  continueUntilDone(83.2, 115);
@@ -224,34 +289,42 @@ void robot1HospitalToFire(){
 */
 void robot1StartToFire(){
 
-  Serial.println("Start!");
-
- Serial.println("switching to fire");
-
  robotLocation = FIRE;
 
- // go forwards, turn left
- Serial.println("forward left!");
- Serial.println("new distance!");
- distanceReading();
- continueUntilDone(25, -90);
+ // go up to line
+ goStraight(40);
 
- // forwards, turn left
- Serial.println("forward left!");
- continueUntilDone(20, -90);
+// up to first intersection by start
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
 
- // forwards, turn right
- Serial.println("forward right!");
- continueUntilDone(130, 120);
+ // turn left
+ turn(-100);
 
- // forwards til close
- Serial.println("forward right!");
- continueUntilDone(35, 105);
+// forward to center intersection
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
 
- // forwards, right
- Serial.println("forward right!");
+// turn right
+ turn(100);
+
+// up to turn near fire
+while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+// turn right
+ turn(100);
+
+// up to fire section
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+ // forwards into fire
  continueUntilDone(85, 115);
- Serial.println("into the fire!");
  continueUntilDone(30, -105);
 
   if (checkForFire()){
@@ -280,13 +353,43 @@ void robot1FireToPeople(){
 void robot1PeopleToHospital(){
 
   // Route to hospital
-  Serial.println("Start!");
-  Serial.println("turn 180");
+  
+  // turn around
   turn(200);
+  // go straight and left
   continueUntilDone(25, -95);
-  continueUntilDone(25, -80);
-  continueUntilDone(30, 110);
-  continueUntilDone(60, 110);
+  // leave fire area
+  goStraight(30);
+
+  // to first intersection
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+ turn(-100);
+
+ // to center intersection
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+ // end of center line
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ turn(100);
+
+ // intersection by hospital
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ turn(100);
+
+// into hospital
+while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ goStraight(60);
 
   // Update location
   robotLocation = HOSPITAL;
@@ -297,6 +400,10 @@ void robot1PeopleToHospital(){
  * When starting at the gate, directs the robot from the gate to the fire
 */
 void robot1GateToFire(){
+  // into fire area
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
 
   // Route from gate to fire
   continueUntilDone(83.2, 115);
@@ -324,7 +431,14 @@ void robot1FireToGate(){
 // Route from fire to gate
   turn(-100);
   continueUntilDone(25, -100);
-  continueUntilDone(30, 210);
+  goStraight(30);
+
+  // onto fire line
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ turn(180);
+
   robotLocation = GATE;
   robotState = ROBOT_IDLE;
 }
@@ -334,24 +448,76 @@ void robot1FireToGate(){
  */
 void robot1TakeOver(){
 
-  // Route from fire 1 to fire 2
+  // Route from fire 2 to fire 1
   turn(-100);
   continueUntilDone(25, -100);
-  continueUntilDone(20, -80);
-  continueUntilDone(150, 110);
-  continueUntilDone(30, 100);
+  goStraight(30);
+
+  // onto line following
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ turn(-100);
+
+  // center intersection
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ turn(100);
+
+  // intersection by fire 1
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ turn(100);
+
+  // up to fire
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+  // into fire
   continueUntilDone(60, 100);
   continueUntilDone(30, -100);
   robotNumber = 2;
 }
 
 void robot2StartToFire(){
-  // go straight, turn right
-  continueUntilDone(30, 90);
-  // go straight, turn right
-  continueUntilDone(30, 90);
-  // go straight, turn right
-  continueUntilDone(30, 90);
+  // go up to line
+  goStraight(30);
+
+  // start line following, first intersection
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ turn(90);
+
+// center line intersection
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+// hospital intersection 1
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+ // hospital intersection 2
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+  // intersection by fire station
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+  // up to fire
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+  // into fire
   //go straight, turn right
   continueUntilDone(60, 90);
   // go into fire and turn left
@@ -381,17 +547,56 @@ void robot2PeopleToHospital(){
   turn(180);
   // straight turn left
   continueUntilDone(30, -90);
-  // straight turn left
-  // TODO: test this distance for hospital
-  continueUntilDone(60, -90);
+  // leave fire section
+  goStraight(80);
+
+  // line follow!
+  // intersection by fire
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+ // hospital intersection
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ turn(-90);
+
+ // up to hospital
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+ //into hospital
+ goStraight(30);
+
   robotLocation = HOSPITAL; 
 }
 
 void robot2HospitalToFire(){
   // turn 180
   turn(180);
-  // forward then right
-  continueUntilDone(30, -90);
+  // leave hospital area
+  goStraight(35);
+
+  // line follow
+  // hospital intersection
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+ turn(90);
+
+// fire intersection
+ while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+  // up to fire
+  while (!checkIntersectionEvent()){
+    handleLineFollowing(baseSpeed);
+ }
+
+  // into fire
    continueUntilDone(60, 90);
   // go into fire and turn left
   continueUntilDone(30, -90);
@@ -414,18 +619,6 @@ void robot2HospitalToFire(){
 */
 void robot2FireToGate(){
   // turn left
-  turn(-90);
-  // go straight, turn left
-  continueUntilDone(30, -90);
-  // go out gate, turn 180
-  continueUntilDone(30, 180);
-  // change location + state
-  robotState = ROBOT_IDLE;
-  robotLocation = GATE;
-}
-
-void robot2FireToGate(){
-// turn left
   turn(-90);
   // go straight, turn left
   continueUntilDone(30, -90);
