@@ -189,8 +189,11 @@ void goStraight(int distanceToWall){
 
   while (distance > distanceToWall) {
     distanceReading();
+    Serial.println(distance);
     chassis.setWheelSpeeds(5,5);
- }
+  }
+  Serial.println("hi, no while loop");
+  chassis.setWheelSpeeds(0,0);
 
 }
 
@@ -199,13 +202,15 @@ void goStraight(int distanceToWall){
  * then turns until correct wall distance is reached again
 */
 void continueUntilDone(int distanceToWall, int angle){
- distanceReading();
+  distanceReading();
 
- while (distance > distanceToWall) {
+  while (distance > distanceToWall) {
   distanceReading();
   chassis.setWheelSpeeds(baseSpeed,baseSpeed);
- }
- chassis.turnFor(-angle, turnSpeed, true);
+  }
+  chassis.turnFor(-angle, turnSpeed, true);
+  Serial.println("wait!");
+  delay(5);
   distanceReading();
 }
 /**
@@ -752,20 +757,14 @@ void rescue(){
   servo.writeMicroseconds(SERVO_UP);
   distanceReading();
   Serial.println(distance);
-  goStraight(3);
+  goStraight(4);
   distanceReading();
   Serial.println(distance);
-  
 
-  while (distance < 5) {
-    Serial.println(distance);
-    servo.writeMicroseconds(SERVO_UP);
-    delay(2000);
-    servo.writeMicroseconds(SERVO_DOWN);
-    delay(2000);
-    distanceReading();
-  }
+  servo.writeMicroseconds(SERVO_DOWN);
+
   distanceReading();
+
   //robotLocation = PEOPLE;
   //robotState = ROBOT_DRIVE;
   idle();
