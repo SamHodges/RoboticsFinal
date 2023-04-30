@@ -23,7 +23,7 @@ Chassis chassis(7.2, 1440, 12.7); //13.5 instead of 12.7
 
 // Set up servo motor
 Servo32U4 servo;
-int SERVO_DOWN = 4000;
+int SERVO_DOWN = 500;
 int SERVO_UP = 4000;
 
 // set up LEDs
@@ -189,11 +189,10 @@ void goStraight(int distanceToWall){
 
   while (distance > distanceToWall) {
     distanceReading();
-    Serial.println(distance);
-    chassis.setWheelSpeeds(5,5);
+    chassis.setWheelSpeeds(3,3);
   }
-  Serial.println("hi, no while loop");
-  chassis.setWheelSpeeds(0,0);
+  Serial.println("no while loop");
+  //chassis.setWheelSpeeds(0,0);
 
 }
 
@@ -348,6 +347,7 @@ void robot1FireToPeople(){
  // straight a bit, then right
   continueUntilDone(57, 100);
  // pickup time!
+ Serial.println("Time to rescue!");
  robotState = ROBOT_RESCUE;
 
 }
@@ -755,20 +755,21 @@ void rescue(){
   */
   //arm down and go straight 
   servo.writeMicroseconds(SERVO_UP);
+  delay(100);
+  Serial.println(distance);
   distanceReading();
   Serial.println(distance);
   goStraight(4);
-  distanceReading();
-  Serial.println(distance);
+  //it does not work with values < 4
+  //when it stops at 4 it is still far from the bucket handle
+  chassis.driveFor(2, 5, true);
 
   servo.writeMicroseconds(SERVO_DOWN);
 
-  distanceReading();
-
-  //robotLocation = PEOPLE;
-  //robotState = ROBOT_DRIVE;
-  idle();
   Serial.println("people rescued!");
+
+  robotLocation = PEOPLE;
+  robotState = ROBOT_DRIVE;
 
 }
 
